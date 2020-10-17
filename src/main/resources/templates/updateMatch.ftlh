@@ -19,11 +19,6 @@ function changeTeam2(){
 
 function validateform(){
 
-       //var model = @Html.Raw(Json.Encode(game));
-
-        //var modelJSValue = '@Game.Id';
-        //alert(modelJSValue);
-
        var p1=document.scoreForm.p1;
        var p2=document.scoreForm.p2;
        var p3=document.scoreForm.p3;
@@ -49,7 +44,6 @@ function validateform(){
         //alert(p2.value);
         //alert(p3.value);
         //alert(p4.value);
-        //alert(model.game_id.value);
 
        //team1 validation
        if (t1.value==0){
@@ -149,7 +143,6 @@ function validateform(){
        }
 
        //final confirmation
-       //var r = confirm("proceed?");
        var r = confirm(winning_team + " --> " + winning_score + " points.\nBEAT\n" + losing_team + " --> " + losing_score + " points.\n\nProceed to submit score?");
          if (r == false) {
            return false;
