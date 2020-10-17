@@ -1,0 +1,20 @@
+https://7.ly/baddy
+https://go-baddy.herokuapp.com/
+#todo: check for even shorter url's
+
+#todo
+- upload to git - don't check in pwd
+- invalidate match - use button instead of checkbox
+- Admin Page
+  - Lock Match update/add
+  - Remove player/team
+  - Roles update
+- if win% is equal check who has played less or lost less?
+- Select team or player
+- CustomException
+- Login with access rights
+- Update Match only edit score?
+- Leaderboard - complete overhaul
+- UI upgrade - sortable tables
+- Multiple leagues
+
