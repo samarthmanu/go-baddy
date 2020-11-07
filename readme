@@ -3,18 +3,19 @@ https://go-baddy.herokuapp.com/
 #todo: check for even shorter url's
 
 #todo
-- upload to git - don't check in pwd
-- invalidate match - use button instead of checkbox
+- after submitting score
+   - show match summary
+   - link to match history
+- match history
+   - pagination
+   - show team and players?
+-player stats & team stats
+   - show pie chart
+- add build# in the start page
+- Login with access rights
 - Admin Page
-  - Lock Match update/add
   - Remove player/team
   - Roles update
-- if win% is equal check who has played less or lost less?
 - Select team or player
-- CustomException
-- Login with access rights
-- Update Match only edit score?
-- Leaderboard - complete overhaul
 - UI upgrade - sortable tables
 - Multiple leagues
-
