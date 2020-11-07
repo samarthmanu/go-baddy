@@ -79,7 +79,7 @@
                                                                 <option value="${s.season_id}" <#if s.season_id==season_id>selected</#if>>${s.name}</option>
                                                             </#list>
                                                                 <option value="-1" <#if -1==season_id>selected</#if>>All time</option>
-                                                                <option value="0"  <#if 0==season_id>selected</#if>>Custom</option>
+                                                                <!--<option value="0"  <#if 0==season_id>selected</#if>>Custom</option>-->
                                                         </select>
                                                         <br><br>
                                                         <div id="datePicker" <#if 0==season_id>style="display:block;"<#else>style="display:none;"</#if>>
