@@ -274,6 +274,20 @@ public class TeamController {
         return MessageFormat.format("<h2>Team [{0}] updated successfully</h2>", team.getName());
     }
 
+    @PostMapping("/invalidateTeam")
+    @ResponseBody
+    public String invalidateTeam(Long team_id) throws YouShallNotPassException {
+
+        Team team = teamService.findById(team_id).get();
+
+        synchronized (team) {
+            teamService.delete(team);
+        }
+
+        teamService.findAll(); //refresh teams cache
+        return(MessageFormat.format("<h2>Team [{0}] deleted successfully</h2>", team.getName()));
+    }
+
     public TeamStats calculateTeamStats(Team team, List<GameV2> teamGames, boolean calcFstats){
 
         //player fantasy points

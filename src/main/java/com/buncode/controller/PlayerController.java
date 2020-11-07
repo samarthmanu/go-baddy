@@ -234,6 +234,7 @@ public class PlayerController {
             player.setUpdated_on(new Timestamp(System.currentTimeMillis()));
             playerService.save(player);
         }
+
         playerService.findAll(); //refresh players cache
         return(MessageFormat.format("<h2>Player [{0}] validity updated from [{1}] to [{2}] successfully</h2>", player.getName(), !invalidate, !newInvalidate));
     }

@@ -167,8 +167,10 @@ function validateform(){
     <input type="button" value="Back" onclick="location.href = document.referrer; return false;"/>
     <input type="button" onclick="location.href='/'" value="Back to Main"/>
      <h2>New Match</h2>
-             <form name="scoreForm" onsubmit="return validateform()" action="/newMatch" method="post">
+     <#if adminConfig.match_lock==true><p style="color:red">Match update/submit is currently locked by admin</p></#if>
+            <fieldset style="display:inline-block;border: none;" <#if adminConfig.match_lock==true>disabled="disabled"</#if>>
                <table border="5">
+               <form name="scoreForm" onsubmit="return validateform()" action="/newMatch" method="post">
                <tr>
                          <td align="center">
                          <br>
@@ -322,8 +324,9 @@ function validateform(){
                         <input type="reset" value="Reset">
                         <br><br>
                         </td>
-
-               </form>
+               </tr>
+             </form>
              </table>
+             </fieldset>
     </body>
 </html>

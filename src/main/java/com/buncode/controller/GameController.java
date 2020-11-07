@@ -134,14 +134,16 @@ public class GameController {
     @GetMapping("/newMatch")
     public String newMatch(Model model) throws YouShallNotPassException {
 
-        if (adminConfigService.getAdminConfig().isMatch_lock()) {
+        /*if (adminConfigService.getAdminConfig().isMatch_lock()) {
             throw new YouShallNotPassException("Match update/creation is currently locked. Please contact admin");
-        }
+        }*/
 
         List<Player> players = playerService.findAllValid();
         List<Team> teams = teamService.findAll();
+
         model.addAttribute("players", players);
         model.addAttribute("teams", teams);
+        model.addAttribute("adminConfig", adminConfigService.getAdminConfig());
 
         return "newMatch";
     }

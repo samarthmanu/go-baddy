@@ -7,6 +7,15 @@
             window.location.reload();
         }
     }
+
+function validateInvalidateForm(){
+
+    var r = confirm("Permanently deleting team\nProceed?");
+      if (r == false) {
+           return false;
+      }
+}
+
  function validateform(){
 
     var p1=document.submitForm.p1;
@@ -52,14 +61,23 @@
      <br><br>
      -->
      <h2>Team Info</h2>
-             <form name="teamForm" onsubmit="return validateform()" action="/updateTeam" method="post">
                <table border="5">
                <tr>
+                                <td>
+                                <form name="invalidateForm" onsubmit="return validateInvalidateForm()" action="/invalidateTeam" method="post">
+                                           <label for="team_id">Id:</label><br>
+                                           <input type="text" id="team_id" name="team_id" value="${team.team_id}" readonly="readonly" style="background-color: lightgrey;">
+                                           <br><br>
+                                           <div align="center"><input type="submit" value="Delete Team"></div>
+                                           <br>
+                                </form>
+                                </td>
+               </tr>
+               <tr>
                          <td>
+                        <form name="teamForm" onsubmit="return validateform()" action="/updateTeam" method="post">
+                         <input type="text" id="team_id" name="team_id" value="${team.team_id}" hidden="true">
                          <br>
-                         <label for="id">Id:</label><br>
-                         <input type="text" id="team_id" name="team_id" value="${team.team_id}" readonly="readonly" style="background-color: lightgrey;"><br><br>
-
                          <label for="p1">Player1:</label><br>
                          <select id="p1" name="p1" disabled>
                              <#list players as p>

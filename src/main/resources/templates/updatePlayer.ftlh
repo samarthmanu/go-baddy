@@ -53,7 +53,6 @@ function validateInvalidateForm(){
                          </form><br><br>
                        </td>
                 </tr>
-
                <tr>
                     <td>
                     <form name="playerForm" onsubmit="return validateform()" action="/updatePlayer" method="post">
