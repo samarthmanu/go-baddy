@@ -1,17 +1,20 @@
 package com.buncode.util;
 
-import org.junit.Test;
-
+import java.sql.Date;
 import java.sql.Timestamp;
-import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.util.Set;
 import java.util.TimeZone;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 public class CommonUtil {
 
-    public static double calcWinRatio(float played, float won){
+    public static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+    public static double calcWinPercentage(float played, float won){
         double res;
         if (played==0){
             res=0;
@@ -33,6 +36,25 @@ public class CommonUtil {
       FORMATTER.setTimeZone(ist);
 
       return (FORMATTER.format(timestamp));  //Date in target timezone
+    }
+
+    public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
+        Set<Object> seen = ConcurrentHashMap.newKeySet();
+        return t -> seen.add(keyExtractor.apply(t));
+    }
+
+    public static Date stringToSqlDate(String dateStr) throws ParseException {
+        java.util.Date date = dateFormat.parse(dateStr);
+        return new java.sql.Date(date.getTime());
+    }
+
+    public static java.util.Date stringToUtilDate(String dateStr) throws ParseException {
+        return dateFormat.parse(dateStr);
+    }
+
+    public static Timestamp stringToTimeStamp(String dateStr) throws ParseException {
+        java.util.Date date = dateFormat.parse(dateStr);
+        return new java.sql.Timestamp(date.getTime());
     }
 
     /*@Test

@@ -44,4 +44,53 @@ public class PlayerService implements IPlayerService {
         return repository.save(player);
     }
 
+    /*@Override
+    public Integer getTeamChangeCountByPlayer(Player player) {
+        return repository.getTeamChangeCountByPlayer(player);
+    }
+
+    @Override
+    public List<Object[]> getPlayerWithHighestPlayedCount() {
+        return repository.getPlayerWithHighestPlayedCount();
+    }
+
+    @Override
+    public List<Object[]> getPlayerWithLowestPlayedCount() {
+        return repository.getPlayerWithLowestPlayedCount();
+    }
+
+    @Override
+    public List<Object[]> getPlayerWithHighestWinCount() {
+        return repository.getPlayerWithHighestWinCount();
+    }
+
+    @Override
+    public List<Object[]> getPlayerWithHighestLossCount() {
+        return repository.getPlayerWithHighestLossCount();
+    }
+
+    @Override
+    public List<Object[]> getPlayerWithHighestAttendance() {
+        return repository.getPlayerWithHighestAttendance();
+    }
+
+    @Override
+    public List<Object[]> getPlayerWithLowestAttendance() {
+        return repository.getPlayerWithLowestAttendance();
+    }
+
+    @Override
+    public List<Object[]> getBestWinningStreak() {
+        return repository.getBestWinningStreak();
+    }
+
+    @Override
+    public List<Object[]> getBestLosingStreak() {
+        return repository.getBestLosingStreak();
+    }
+
+    @Override
+    public PlayerStats getPlayerStats(Player player) {
+        return repository.getPlayerStats(player.getPlayer_id());
+    }*/
 }

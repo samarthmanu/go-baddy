@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 <html>
-<script>
+<script type="text/javascript">
+    onload=function(){
+        if(!!window.performance && window.performance.navigation.type == 2)
+        {
+            window.location.reload();
+        }
+    }
  function validateform(){
 
     var p1=document.submitForm.p1;
@@ -36,6 +42,7 @@
     <button onClick="window.location.reload();">Refresh</button>
     <input type="button" value="Back" onclick="location.href = document.referrer; return false;"/>
     <input type="button" onclick="location.href='/'" value="Back to Main"/>
+   <!--
    <h2>Select Team</h2>
        <select onchange="location = this.value;">
            <#list teams as t>
@@ -43,6 +50,7 @@
            </#list>
        </select>
      <br><br>
+     -->
      <h2>Team Info</h2>
              <form name="teamForm" onsubmit="return validateform()" action="/updateTeam" method="post">
                <table border="5">
@@ -53,14 +61,14 @@
                          <input type="text" id="team_id" name="team_id" value="${team.team_id}" readonly="readonly" style="background-color: lightgrey;"><br><br>
 
                          <label for="p1">Player1:</label><br>
-                         <select id="p1" name="p1">
+                         <select id="p1" name="p1" disabled>
                              <#list players as p>
                                 <option value="${p.player_id}" <#if p.player_id==team.p1.player_id>selected</#if>>${p.name}</option>
                              </#list>
                          </select><br><br>
 
                          <label for="p2">Player2:</label><br>
-                         <select id="p2" name="p2">
+                         <select id="p2" name="p2" disabled>
                              <#list players as p>
                                 <option value="${p.player_id}" <#if p.player_id==team.p2.player_id>selected</#if>>${p.name}</option>
                              </#list>
@@ -79,6 +87,7 @@
                          <input type="text" id="alias" name="alias" value="${team.alias}"><br><br>
                          </td>
                </tr>
+
                <tr>
                         <td align="center">
                         <br>

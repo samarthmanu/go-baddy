@@ -5,9 +5,36 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.text.MessageFormat;
 
 @Entity
+/*@NamedNativeQuery(
+        name = "Team.getTeamStatsByPlayer",
+        query = "SELECT s.team_id, s.played, s.won, s.lost\n" +
+                "FROM team_stats s,\n" +
+                "     teams t\n" +
+                "WHERE :player_id IN (t.p1,t.p2)\n" +
+                "AND   s.team_id = t.team_id",
+        resultSetMapping = "teamStatsMapping")
+
+@NamedNativeQuery(
+        name = "Team.getTeamStatsByTeam",
+        query = "SELECT s.team_id, s.played, s.won, s.lost\n" +
+                "FROM team_stats s\n" +
+                "WHERE s.team_id = :team_id",
+        resultSetMapping = "teamStatsMapping")
+
+@SqlResultSetMapping(name = "teamStatsMapping", classes = {
+        @ConstructorResult(targetClass = TeamStats.class,
+                columns = {
+                        @ColumnResult(name = "team_id", type = Integer.class),
+                        @ColumnResult(name = "played", type = Integer.class),
+                        @ColumnResult(name = "won", type = Integer.class),
+                        @ColumnResult(name = "lost", type = Integer.class),
+                })
+})*/
 @Table(name = "teams")
+@Cacheable(value = true)
 public class Team {
 
     @Id
@@ -27,11 +54,11 @@ public class Team {
     @Column(name="created_on", nullable = false, updatable = false, insertable = false)
     private Timestamp created_on;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "p1")
     private Player p1;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "p2")
     private Player p2;
 
@@ -91,6 +118,10 @@ public class Team {
         return name;
     }
 
+    public String getNameAsLink() {
+        return MessageFormat.format("<a href=\"teamStats?id={0}\" title=\"{1}\">Team {2}</a> <font size='-1'>({3} & {4})</font>", team_id, (p1.getName().concat(" & ").concat(p2.getName())), name, p1.getNameAsLink(), p2.getNameAsLink());
+    }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -134,5 +165,20 @@ public class Team {
         sb.append(", p2=").append(p2);
         sb.append('}');
         return sb.toString();
+    }
+
+    public String getCacheKey(String key){
+        return "team_" + this.team_id + "_" + key;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof Team
+                && o!=null
+                && ((Team) o).team_id == this.team_id){
+            return true;
+        }else{
+            return false;
+        }
     }
 }

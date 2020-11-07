@@ -1,6 +1,13 @@
 <!DOCTYPE html>
 <html>
-<script>
+<script type="text/javascript">
+    onload=function(){
+        if(!!window.performance && window.performance.navigation.type == 2)
+        {
+            window.location.reload();
+        }
+    }
+
 function changeTeam1(){
     var t1=document.scoreForm.t1;
     if(t1.value>0){
@@ -82,17 +89,17 @@ function validateform(){
         }
 
        //duplicate players check
-       if (t1.value==0 && p1.value>0 && (p1.value==p2.value || p1.value==p3.value || p1.value==p4.value)){
+       if (t1.value==0 && p1.value>0 && p1.value!=17 && (p1.value==p2.value || p1.value==p3.value || p1.value==p4.value)){
          alert(p1_name + " selected twice or more");
          return false;
        }
 
-       if (t1.value==0 && p2.value>0 && (p2.value==p3.value || p2.value==p4.value)){
+       if (t1.value==0 && p2.value>0  && p2.value!=17 && (p2.value==p3.value || p2.value==p4.value)){
          alert(p2_name + " selected twice or more");
          return false;
        }
 
-       if (t2.value==0 && p3.value>0 && (p3.value==p4.value)){
+       if (t2.value==0 && p3.value>0 &&  p3.value!=17 && (p3.value==p4.value)){
          alert(p3_name + " selected twice or more");
          return false;
        }

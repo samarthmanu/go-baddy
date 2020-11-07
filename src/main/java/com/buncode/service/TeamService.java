@@ -2,6 +2,7 @@ package com.buncode.service;
 
 import com.buncode.model.Player;
 import com.buncode.model.Team;
+import com.buncode.model.TeamStats;
 import com.buncode.repository.TeamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,6 +41,12 @@ public class TeamService implements ITeamService {
     }
 
     @Override
+    public Team getTeamByName(String name) {
+
+        return repository.getTeamByName(name);
+    }
+
+    @Override
     public Team save(Team team) {
 
         return repository.save(team);
@@ -51,9 +58,45 @@ public class TeamService implements ITeamService {
         repository.delete(team);
     }
 
-    @Override
-    public Team getTeamByName(String name) {
-
-        return repository.getTeamByName(name);
+    /*@Override
+    public List<Object[]> getTeamWithLowestPlayedCount() {
+        return repository.getTeamWithLowestPlayedCount();
     }
+
+    @Override
+    public List<Object[]> getTeamWithHighestPlayedCount() {
+        return repository.getTeamWithHighestPlayedCount();
+    }
+
+    @Override
+    public List<Object[]> getTeamWithHighestWinCount() {
+        return repository.getTeamWithHighestWinCount();
+    }
+
+    @Override
+    public List<Object[]> getTeamWithHighestLossCount() {
+        return repository.getTeamWithHighestLossCount();
+    }
+
+    @Override
+    public List<Object[]> getTeamWithHighestAttendance() {
+        return repository.getTeamWithHighestAttendance();
+    }
+
+    @Override
+    public List<Object[]> getTeamWithLowestAttendance() {
+        return repository.getTeamWithLowestAttendance();
+    }
+
+    @Override
+    public List<TeamStats> getTeamStats(Player player) {
+        return repository.getTeamStatsByPlayer(player.getPlayer_id());
+    }
+
+    @Override
+    public TeamStats getTeamStats(Team team) {
+        return repository.getTeamStatsByTeam(team.getTeam_id());
+    }*/
+
+
 }

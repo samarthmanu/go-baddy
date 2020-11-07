@@ -1,13 +1,17 @@
 package com.buncode.model;
 
+import com.buncode.util.CommonUtil;
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 
+@Component
 @Entity
+@Cacheable
 @Table(name = "games")
 public class Game {
 
@@ -56,6 +60,10 @@ public class Game {
     }
 
     public Game() {
+    }
+
+    public String getPlayedOn_IST() {
+        return CommonUtil.getTimeInIST(created_on);
     }
 
     public boolean isInvalidate() {

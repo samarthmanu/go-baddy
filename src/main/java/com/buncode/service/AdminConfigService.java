@@ -22,4 +22,9 @@ public class AdminConfigService implements IAdminConfigService {
         return repository.getAdminConfig();
     }
 
+    @Override
+    public AdminConfig save(AdminConfig adminConfig) {
+
+        return repository.save(adminConfig);
+    }
 }

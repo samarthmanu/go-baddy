@@ -5,8 +5,25 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.text.MessageFormat;
 
 @Entity
+/*@NamedQuery(name = "GameV2.getMatchdaysByPlayer",
+        query = "SELECT CAST(played_on AS DATE) as match_days FROM GameV2 g WHERE invalidate IS FALSE AND 15 in (p1, p2, p3, p4)")
+@NamedNativeQuery(
+        name = "Player.getPlayerStats",
+        query = "select player_id,played,won,lost from player_stats where player_id=:player_id",
+        resultSetMapping = "playerStatsMapping")
+@SqlResultSetMapping(name = "playerStatsMapping", classes = {
+        @ConstructorResult(targetClass = PlayerStats.class,
+                columns = {
+                        @ColumnResult(name = "player_id", type = Integer.class),
+                        @ColumnResult(name = "played", type = Integer.class),
+                        @ColumnResult(name = "won", type = Integer.class),
+                        @ColumnResult(name = "lost", type = Integer.class),
+                })
+})*/
+@Cacheable(value = true)
 @Table(name = "players")
 public class Player {
 
@@ -22,13 +39,12 @@ public class Player {
     private boolean invalidate;
 
     @CreationTimestamp
-    @Column(name="updated_on", nullable = false, updatable = true, insertable = false)
+    @Column(name = "updated_on", nullable = false, updatable = true, insertable = false)
     private Timestamp updated_on;
 
     @CreationTimestamp
-    @Column(name="updated_on", nullable = false, updatable = false, insertable = false)
+    @Column(name = "updated_on", nullable = false, updatable = false, insertable = false)
     private Timestamp created_on;
-
 
     public Player(String name, String playing_style, String signature_moves, String alias, String contact, boolean invalidate, Timestamp updated_on, Timestamp created_on) {
         this.name = name;
@@ -68,6 +84,10 @@ public class Player {
         this.name = name;
     }
 
+    public String getNameAsLink() {
+        return MessageFormat.format("<a href=\"playerStats?id={0}\" title=\"Click to see player stats\">{1}</a>", player_id, name);
+    }
+
     public Timestamp getUpdated_on() {
         return updated_on;
     }
@@ -80,12 +100,12 @@ public class Player {
         return created_on;
     }
 
-    public String getCreatedOn_IST() {
-        return CommonUtil.getTimeInIST(created_on);
-    }
-
     public void setCreated_on(Timestamp created_on) {
         this.created_on = created_on;
+    }
+
+    public String getCreatedOn_IST() {
+        return CommonUtil.getTimeInIST(created_on);
     }
 
     public String getPlaying_style() {
@@ -128,4 +148,20 @@ public class Player {
         sb.append('}');
         return sb.toString();
     }
+
+    public String getCacheKey(String key){
+        return "player_" + this.player_id + "_" + key;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof Player
+                && o!=null
+                    && ((Player) o).player_id == this.player_id){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
 }
