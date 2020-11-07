@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.swing.text.TabableView;
 import java.sql.Timestamp;
 import java.text.MessageFormat;
 import java.text.ParseException;
@@ -226,6 +225,7 @@ public class TeamController {
         Team team = new Team(name, playing_style, signature_moves, alias, now, now, player1, player2);
         teamService.save(team);
 
+        teamService.findAll(); //refresh teams cache
         String result = MessageFormat.format("<h2>Team [{0}] created successfully</h2>", team.getName());
         return result;
     }
@@ -270,6 +270,7 @@ public class TeamController {
             teamService.save(team);
         }
 
+        teamService.findAll(); //refresh teams cache
         return MessageFormat.format("<h2>Team [{0}] updated successfully</h2>", team.getName());
     }
 

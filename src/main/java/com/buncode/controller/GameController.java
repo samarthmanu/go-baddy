@@ -201,6 +201,7 @@ public class GameController {
         Game game = new Game(player1, player2, player3, player4, score1, score2, false, now, now);
         gameService.save(game);
 
+        gameV2Service.findAll(); //refresh teams cache
         String result = MessageFormat.format("<h2>Match [#{0}] created successfully</h2>", game.getGame_id());
         return result;
 
@@ -267,6 +268,7 @@ public class GameController {
             game.setUpdated_on(new Timestamp(System.currentTimeMillis()));
             gameService.save(game);
         }
+
         gameV2Service.findAll(); //refresh games cache
         return(MessageFormat.format("<h2>Match [#{0}] updated successfully</h2>", game.getGame_id()));
 
@@ -285,6 +287,7 @@ public class GameController {
             game.setUpdated_on(new Timestamp(System.currentTimeMillis()));
             gameService.save(game);
         }
+
         gameV2Service.findAll(); //refresh games cache
         return(MessageFormat.format("<h2>Match [#{0}] validity updated from [{1}] to [{2}] successfully</h2>", game.getGame_id(), !invalidate, !newInvalidate));
     }
