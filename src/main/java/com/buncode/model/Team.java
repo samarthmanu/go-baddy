@@ -119,7 +119,7 @@ public class Team {
     }
 
     public String getNameAsLink() {
-        return MessageFormat.format("<a href=\"teamStats?id={0}\" title=\"{1}\">Team {2}</a> <font size='-1'>({3} & {4})</font>", team_id, (p1.getName().concat(" & ").concat(p2.getName())), name, p1.getNameAsLink(), p2.getNameAsLink());
+        return MessageFormat.format("<a href=\"teamStats?team_id={0}\" title=\"{1}\">Team {2}</a> <font size='-1'>({3} & {4})</font>", team_id, (p1.getName().concat(" & ").concat(p2.getName())), name, p1.getNameAsLink(), p2.getNameAsLink());
     }
 
     public void setName(String name) {

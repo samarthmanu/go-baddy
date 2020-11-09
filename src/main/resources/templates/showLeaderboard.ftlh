@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<script>
+<script type="text/javascript">
     onload=function(){
             if(!!window.performance && window.performance.navigation.type == 2)
             {
@@ -68,7 +68,14 @@
         <title>Leaderboard</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        </head>
+        <link rel="stylesheet" href="dist/sortable-tables.min.css">
+        <script src="dist/sortable-tables.min.js" type="text/javascript"></script>
+    </head>
+    <style>
+           th {
+                background-color: #DCDCDC
+            }
+   </style>
     <body>
         <button onClick="window.location.reload();">Refresh</button>
         <input type="button" value="Back" onclick="location.href = document.referrer; return false;"/>
@@ -89,20 +96,40 @@
                                                        <button onclick="return validateCustomDates()">Go</button>
                                                 </div>
                                        </form>
-                      <table>
-                      <tr>
-                      <td>
-                           <h2>Points table</h2>
-                          <table border="5">
-                              <tr>
-                                  <th>Player</th>
-                                  <th>Attendance pts</th>
-                                  <th>Played pts</th>
-                                  <th>Win pts</th>
-                                  <th>Deuce pts</th>
-                                  <th>Team change pts</th>
-                                  <th>Total pts</th>
-                              </tr>
+                            <h2>Points system</h2>
+                                 <table border="5" class="sortable-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Rule</th>
+                                            <th class="numeric-sort">Points</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <#list pointsConfig as pConfig>
+                                            <tr>
+                                                <td>${pConfig.rule}</td>
+                                                <td>${pConfig.multiplier}</td>
+                                            </tr>
+                                        </#list>
+                                    </tbody>
+                                </table>
+         <h2>Points table</h2>
+                    <table>
+                    <tr>
+                    <td style="vertical-align:top">
+                          <table border="5" class="sortable-table">
+                              <thead>
+                                  <tr>
+                                      <th>Player</th>
+                                      <th class="numeric-sort">Attendance pts</th>
+                                      <th class="numeric-sort">Played pts</th>
+                                      <th class="numeric-sort">Win pts</th>
+                                      <th class="numeric-sort">Deuce pts</th>
+                                      <th class="numeric-sort">Team change pts</th>
+                                      <th class="numeric-sort">Total pts</th>
+                                  </tr>
+                              </thead>
+                            <tbody>
                             <#list players_pts as pStats>
                                 <tr>
                                     <td><a href="playerStats?player_id=${pStats.player.player_id}">${pStats.player.name}<a/></td>
@@ -114,14 +141,23 @@
                                     <td>${pStats.fMap.total_pts.total}</td>
                                 </tr>
                             </#list>
+                            </tbody>
+                          </table>
+                     </td>
+                     <td style="vertical-align:top">
+                          <table border="5" class="sortable-table">
+                          <thead>
+                              <tr>
                                   <th>Team</th>
-                                  <th>Attendance pts</th>
-                                  <th>Played pts</th>
-                                  <th>Win pts</th>
-                                  <th>Deuce pts</th>
-                                  <th>Team change pts</th>
-                                  <th>Total pts</th>
+                                  <th class="numeric-sort">Attendance pts</th>
+                                  <th class="numeric-sort">Played pts</th>
+                                  <th class="numeric-sort">Win pts</th>
+                                  <th class="numeric-sort">Deuce pts</th>
+                                  <th class="numeric-sort">Team change pts</th>
+                                  <th class="numeric-sort">Total pts</th>
                               </tr>
+                            </thead>
+                            <tbody>
                             <#list teams_pts as tStats>
                                 <tr>
                                     <td> <a href="teamStats?team_id=${tStats.team.team_id}" title="${tStats.team.p1.name} & ${tStats.team.p2.name}"}>Team ${tStats.team.name}</a>
@@ -139,34 +175,26 @@
                                     <td>${tStats.fMap.total_pts.total}</td>
                                 </tr>
                             </#list>
+                            </tbody>
                           </table>
-                       </td>
-                       <td style="vertical-align:top">
-                            <h2>Points system</h2>
-                                 <table border="5">
-                                    <tr>
-                                        <th>Rule</th>
-                                        <th>Points</th>
-                                    </tr>
-                                    <#list pointsConfig as pConfig>
-                                        <tr>
-                                            <td>${pConfig.rule}</td>
-                                            <td>${pConfig.multiplier}</td>
-                                        </tr>
-                                    </#list>
-                                </table>
-                       </td>
-                       </tr>
-                       </table>
+                     </td>
+                     </tr>
+                     </table>
      <h2>Stats table</h2>
-                  <table border="5">
+                  <table>
+                  <tr>
+                  <td style="vertical-align:top">
+                  <table border="5" class="sortable-table">
+                  <thead>
                       <tr>
                           <th>Player</th>
-                          <th>Played</th>
-                          <th>Won</th>
-                          <th>Lost</th>
-                          <th>Win %</th>
+                          <th class="numeric-sort">Played</th>
+                          <th class="numeric-sort">Won</th>
+                          <th class="numeric-sort">Lost</th>
+                          <th class="numeric-sort">Win %</th>
                       </tr>
+                  </thead>
+                  <tbody>
                     <#list playerStats as pStats>
                         <tr>
                             <td><a href="playerStats?player_id=${pStats.player.player_id}">${pStats.player.name}<a/></td>
@@ -176,13 +204,21 @@
                             <td>${pStats.getWinRatio()}</td>
                         </tr>
                     </#list>
+                    </tbody>
+                    </table>
+                    </td>
+                    <td style="vertical-align:top">
+                    <table border="5" class="sortable-table">
+                      <thead>
                       <tr>
                           <th>Team</th>
-                          <th>Played</th>
-                          <th>Won</th>
-                          <th>Lost</th>
-                          <th>Win %</th>
+                          <th class="numeric-sort">Played</th>
+                          <th class="numeric-sort">Won</th>
+                          <th class="numeric-sort">Lost</th>
+                          <th class="numeric-sort">Win %</th>
                       </tr>
+                      </thead>
+                      <tbody>
                         <#list teamStats as tStats>
                         <tr>
                             <td> <a href="teamStats?team_id=${tStats.team.team_id}" title="${tStats.team.p1.name} & ${tStats.team.p2.name}"}>Team ${tStats.team.name}</a>
@@ -198,7 +234,11 @@
                             <td>${tStats.getWinRatio()}</td>
                         </tr>
                     </#list>
+                    </tbody>
                   </table>
+                </td>
+                </tr>
+                </table>
 
     </body>
 </html>

@@ -137,7 +137,9 @@ public class LeaderboardController {
         }
 
         //pointsConfig
-        model.addAttribute("pointsConfig", pointsConfigService.findAll());
+        List<PointsConfig> pointsConfigs = pointsConfigService.findAll();
+        Collections.sort(pointsConfigs, new CustomSort.SortPointsConfig());  //sort by points awarded
+        model.addAttribute("pointsConfig", pointsConfigs);
 
         end = System.currentTimeMillis();
         diff = (end - start) / 1000F;

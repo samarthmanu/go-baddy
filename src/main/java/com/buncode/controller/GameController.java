@@ -19,6 +19,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static com.buncode.util.Constants.NO_DATA;
+
 @Controller
 public class GameController {
 
@@ -86,8 +88,8 @@ public class GameController {
         Date lastMatchday = matchDays.stream().findFirst().orElse(null);
         Date firstMatchday = matchDays.stream().skip(matchDays.size() - 1).findFirst().orElse(null);
 
-        model.addAttribute("matchdays_first", firstMatchday!=null? firstMatchday.toString() :" <No data> ");
-        model.addAttribute("matchdays_last", firstMatchday!=null? lastMatchday.toString() :" <No data> ");
+        model.addAttribute("matchdays_first", firstMatchday!=null? firstMatchday.toString() :NO_DATA);
+        model.addAttribute("matchdays_last", firstMatchday!=null? lastMatchday.toString() :NO_DATA);
         model.addAttribute("matchdays_count",matchDays.size());
         model.addAttribute("games_count",allGames.size());
         model.addAttribute("games_avg",Math.round((allGames.size()/matchDays.size()) * 100.0) / 100.0);

@@ -68,7 +68,14 @@
         <title>Match History</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        </head>
+        <link rel="stylesheet" href="dist/sortable-tables.min.css">
+        <script src="dist/sortable-tables.min.js" type="text/javascript"></script>
+    </head>
+    <style>
+           th {
+                background-color: #DCDCDC
+            }
+   </style>
     <body>
     <button onClick="window.location.reload();">Refresh</button>
     <input type="button" value="Back" onclick="location.href = document.referrer; return false;"/>
@@ -113,16 +120,19 @@
                     </tr>
                 </table>
         <h2>Match History</h2>
-                <table border="5">
+                <table border="5" class="sortable-table">
+                    <thead>
                     <tr>
-                        <th>Id</th>
+                        <th class="numeric-sort">Id</th>
                         <th>Played on</th>
                         <th>Team1</th>
-                        <th>Score1</th>
+                        <th class="numeric-sort">Score1</th>
                         <th>Team2</th>
-                        <th>Score2</th>
+                        <th class="numeric-sort">Score2</th>
                         <th>Result</th>
                     </tr>
+                    </thead>
+                    <tbody>
                     <#list games as game>
                         <tr>
                             <td><a href="updateMatch?id=${game.game_id}" title="Click to update match details">${game.game_id}</a>
@@ -191,6 +201,7 @@
                             </td>
                         </tr>
                     </#list>
+                   </tbody>
                 </table>
     </body>
 </html>

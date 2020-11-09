@@ -2,6 +2,9 @@ package com.buncode.util;
 
 public class Constants {
 
+    public static final String NO_DATA_HTML = " &lt;No Data&gt; ";
+    public static final String NO_DATA = " <No Data> ";
+
     public static final long POINTS_RULE_ID_FOR_GAMES_PLAYED=1;
     public static final long POINTS_RULE_ID_FOR_TEAMS_CHANGED=2;
     public static final long POINTS_RULE_ID_FOR_MATCHDAYS_ATTENDED=3;

@@ -14,10 +14,10 @@ import java.text.ParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.buncode.util.Constants.NO_DATA_HTML;
+
 @Controller
 public class RecordsController {
-
-    public static final String NO_DATA = "&lt;No Data&gt;";
 
     private class GameStreak {
 
@@ -295,10 +295,11 @@ public class RecordsController {
 
         //highest total points in game
         {
-            String biggestTotalDesc = NO_DATA;
+            String biggestTotalDesc = NO_DATA_HTML;
             if(highestScore>0) {
+
                 biggestTotalDesc = highestScore_games.stream().
-                        map(game -> game.getScoreSum() + " pts --> " + game.getGame_idAsLink() + ": " + game.getWinningResultWithScore()).
+                        map(game -> game.getScoreSum() + " pts --> " + game.getGame_idAsLinktoMatchHist(season_id) + ": " + game.getWinningResultWithScore()).
                         collect(Collectors.joining("<br>"));
             }
             fameList.add(new RecordStat("Highest total pts (Match)", biggestTotalDesc));
@@ -307,14 +308,14 @@ public class RecordsController {
         //biggest win/loss
         {
             // GameV2 biggestVictory = allGames.stream().max(Comparator.comparingInt(GameV2::getScoreDiff)).orElse(null);
-            String biggestWinDesc = NO_DATA;
-            String biggestLossDesc = NO_DATA;
+            String biggestWinDesc = NO_DATA_HTML;
+            String biggestLossDesc = NO_DATA_HTML;
             if(biggestVictory>0) {
                 biggestWinDesc = biggestVictory_games.stream().
-                        map(game -> game.getScoreDiff() + " pts --> " + game.getGame_idAsLink() + ": " + game.getWinningResultWithScore()).
+                        map(game -> game.getScoreDiff() + " pts --> " + game.getGame_idAsLinktoMatchHist(season_id) + ": " + game.getWinningResultWithScore()).
                         collect(Collectors.joining("<br>"));
                 biggestLossDesc = biggestVictory_games.stream().
-                        map(game -> game.getScoreDiff() + " pts --> " + game.getGame_idAsLink() + ": " + game.getLosingResultWithScore()).
+                        map(game -> game.getScoreDiff() + " pts --> " + game.getGame_idAsLinktoMatchHist(season_id) + ": " + game.getLosingResultWithScore()).
                         collect(Collectors.joining("<br>"));
             }
             fameList.add(new RecordStat("Biggest Win (Match)", biggestWinDesc));
@@ -323,7 +324,7 @@ public class RecordsController {
 
         //most attendance - player
         {
-            String playerMostAttendanceDesc = NO_DATA;
+            String playerMostAttendanceDesc = NO_DATA_HTML;
             if(attendanceMap_players.size()>0) {
                 Map<Player, Integer> attendanceCount_players = attendanceMap_players.entrySet().stream().collect(Collectors.toMap(
                         entry -> entry.getKey(),
@@ -346,7 +347,7 @@ public class RecordsController {
 
         //most attendance - team
         {
-            String teamMostAttendanceDesc = NO_DATA;
+            String teamMostAttendanceDesc = NO_DATA_HTML;
             if(attendanceMap_teams.size()>0) {
                 Map<Team, Integer> attendanceCount_teams = attendanceMap_teams.entrySet().stream().collect(Collectors.toMap(
                         entry -> entry.getKey(),
@@ -369,7 +370,7 @@ public class RecordsController {
 
         //most played - player
         {
-            String playerMostPlayedDesc = NO_DATA;
+            String playerMostPlayedDesc = NO_DATA_HTML;
             if(playedCount_players.size()>0) {
                 Integer maxPlayed = playedCount_players.get(
                         playedCount_players.entrySet().stream().max(Map.Entry.comparingByValue()).get().getKey());
@@ -388,7 +389,7 @@ public class RecordsController {
 
         //most played - team
         {
-            String teamMostPlayedDesc = NO_DATA;
+            String teamMostPlayedDesc = NO_DATA_HTML;
             if(playedCount_teams.size()>0) {
                 Integer maxPlayed = playedCount_teams.get(
                         playedCount_teams.entrySet().stream().max(Map.Entry.comparingByValue()).get().getKey());
@@ -407,7 +408,7 @@ public class RecordsController {
 
         //most won - player
         {
-            String playerMostWonDesc = NO_DATA;
+            String playerMostWonDesc = NO_DATA_HTML;
             if(wonCount_players.size()>0) {
                 Integer maxWon = wonCount_players.get(
                         wonCount_players.entrySet().stream().max(Map.Entry.comparingByValue()).get().getKey());
@@ -426,7 +427,7 @@ public class RecordsController {
 
         //most won - team
         {
-            String teamMostWonDesc = NO_DATA;
+            String teamMostWonDesc = NO_DATA_HTML;
             if(wonCount_teams.size()>0) {
                 Integer maxWon = wonCount_teams.get(
                         wonCount_teams.entrySet().stream().max(Map.Entry.comparingByValue()).get().getKey());
@@ -445,7 +446,7 @@ public class RecordsController {
 
         //most deuces - player
         {
-            String playerMostDeuceDesc = NO_DATA;
+            String playerMostDeuceDesc = NO_DATA_HTML;
             if(deuceCount_players.size()>0) {
                 Integer maxDeuce = deuceCount_players.get(
                         deuceCount_players.entrySet().stream().max(Map.Entry.comparingByValue()).get().getKey());
@@ -464,7 +465,7 @@ public class RecordsController {
 
         //most deuces - team
         {
-            String teamMostDeuceDesc = NO_DATA;
+            String teamMostDeuceDesc = NO_DATA_HTML;
             if(deuceCount_teams.size()>0) {
                 Integer maxDeuce = deuceCount_teams.get(
                         deuceCount_teams.entrySet().stream().max(Map.Entry.comparingByValue()).get().getKey());
@@ -483,7 +484,7 @@ public class RecordsController {
 
         //most deuces won - player
         {
-            String playerMostDeuceWonDesc = NO_DATA;
+            String playerMostDeuceWonDesc = NO_DATA_HTML;
             if(deuceCountWon_players.size()>0) {
                 Integer maxDeuceWon = deuceCountWon_players.get(
                         deuceCountWon_players.entrySet().stream().max(Map.Entry.comparingByValue()).get().getKey());
@@ -502,7 +503,7 @@ public class RecordsController {
 
         //most deuces won - team
         {
-            String teamMostDeuceWonDesc = NO_DATA;
+            String teamMostDeuceWonDesc = NO_DATA_HTML;
             if(deuceCountWon_teams.size()>0) {
                 Integer maxDeuceWon = deuceCountWon_teams.get(
                         deuceCountWon_teams.entrySet().stream().max(Map.Entry.comparingByValue()).get().getKey());
@@ -521,7 +522,7 @@ public class RecordsController {
 
         //longest winning streak - player
         {
-            String playerLongestWinStreakDesc = NO_DATA;
+            String playerLongestWinStreakDesc = NO_DATA_HTML;
             if(streakMap_players.size()>0) {
 
                 Map<Player, List<GameStreak>> streakMapOnlyWins_players = streakMap_players.entrySet().stream().collect(Collectors.toMap(
@@ -535,10 +536,9 @@ public class RecordsController {
                         int currentSteakCount = streak.getGameList().size();
                         if (currentSteakCount>0 && currentSteakCount>longestWinStreakCount){
                             longestWinStreaks.clear(); //we have a new highest
-                            longestWinStreakCount=streak.getGameList().size();
+                            longestWinStreakCount=currentSteakCount;
                             longestWinStreaks.add(streak);
-                        }else if(streak.getGameList().size()>longestWinStreakCount){
-                            longestWinStreakCount=streak.getGameList().size();
+                        }else if(currentSteakCount==longestWinStreakCount){
                             longestWinStreaks.add(streak); //we have a combined topper
                         }
                     }
@@ -551,8 +551,8 @@ public class RecordsController {
                             GameV2 endStreak = gameStreak.getGameList().get(0);
 
                             return gameStreak.getGameList().size() + " games --> " + gameStreak.player.getNameAsLink() + ": "
-                                    + startStreak.getGame_idAsLink() + " (" + startStreak.getPlayedOn_IST() + ") to "
-                                    + endStreak.getGame_idAsLink() + " (" + endStreak.getPlayedOn_IST() + ")";
+                                    + startStreak.getGame_idAsLinktoMatchHist(season_id) + " (" + startStreak.getPlayedOn_IST() + ") to "
+                                    + endStreak.getGame_idAsLinktoMatchHist(season_id) + " (" + endStreak.getPlayedOn_IST() + ")";
                         })
                         .collect(Collectors.joining("<br>"));
             }
@@ -561,7 +561,7 @@ public class RecordsController {
 
         //longest winning streak - team
         {
-            String teamLongestWinStreakDesc = NO_DATA;
+            String teamLongestWinStreakDesc = NO_DATA_HTML;
             if(streakMap_teams.size()>0) {
 
                 Map<Team, List<GameStreak>> streakMapOnlyWins_teams = streakMap_teams.entrySet().stream().collect(Collectors.toMap(
@@ -575,10 +575,9 @@ public class RecordsController {
                         int currentSteakCount = streak.getGameList().size();
                         if (currentSteakCount>0 && currentSteakCount>longestWinStreakCount){
                             longestWinStreaks.clear(); //we have a new highest
-                            longestWinStreakCount=streak.getGameList().size();
+                            longestWinStreakCount=currentSteakCount;
                             longestWinStreaks.add(streak);
-                        }else if(streak.getGameList().size()>longestWinStreakCount){
-                            longestWinStreakCount=streak.getGameList().size();
+                        }else if(currentSteakCount==longestWinStreakCount){
                             longestWinStreaks.add(streak); //we have a combined topper
                         }
                     }
@@ -591,8 +590,8 @@ public class RecordsController {
                             GameV2 endStreak = gameStreak.getGameList().get(0);
 
                             return gameStreak.getGameList().size() + " games --> " + gameStreak.team.getNameAsLink() + ": "
-                                    + startStreak.getGame_idAsLink() + " (" + startStreak.getPlayedOn_IST() + ") to "
-                                    + endStreak.getGame_idAsLink() + " (" + endStreak.getPlayedOn_IST() + ")";
+                                    + startStreak.getGame_idAsLinktoMatchHist(season_id) + " (" + startStreak.getPlayedOn_IST() + ") to "
+                                    + endStreak.getGame_idAsLinktoMatchHist(season_id) + " (" + endStreak.getPlayedOn_IST() + ")";
                         })
                         .collect(Collectors.joining("<br>"));
             }
@@ -601,85 +600,9 @@ public class RecordsController {
 
         //HALL OF SHAME
 
-        //most losses - player
-        {
-            String playerMostLostDesc = NO_DATA;
-            if(lostCount_players.size()>0) {
-                Integer maxLost = lostCount_players.get(
-                        lostCount_players.entrySet().stream().max(Map.Entry.comparingByValue()).get().getKey());
-
-                List<Player> playersMostLost = lostCount_players.entrySet().stream()
-                        .filter(e -> e.getValue() == maxLost)
-                        .map(Map.Entry::getKey)
-                        .collect(Collectors.toList());
-
-                playerMostLostDesc = playersMostLost.stream().
-                        map(player -> maxLost + " games --> " + player.getNameAsLink())
-                        .collect(Collectors.joining("<br>"));
-            }
-            shameList.add(new RecordStat("Most games lost (Player)", playerMostLostDesc));
-        }
-
-        //most losses - team
-        {
-            String teamMostLostDesc = NO_DATA;
-            if(lostCount_teams.size()>0) {
-                Integer maxLost = lostCount_teams.get(
-                        lostCount_teams.entrySet().stream().max(Map.Entry.comparingByValue()).get().getKey());
-
-                List<Team> teamsMostLost = lostCount_teams.entrySet().stream()
-                        .filter(e -> e.getValue() == maxLost)
-                        .map(Map.Entry::getKey)
-                        .collect(Collectors.toList());
-
-                teamMostLostDesc = teamsMostLost.stream().
-                        map(team -> maxLost + " games --> " + team.getNameAsLink())
-                        .collect(Collectors.joining("<br>"));
-            }
-            shameList.add(new RecordStat("Most games lost (Team)", teamMostLostDesc));
-        }
-
-        //most deuces lost - player
-        {
-            String playerMostDeuceLostDesc = NO_DATA;
-            if(deuceCount_players.size()>0) {
-                Integer maxDeuceLost = deuceCount_players.get(
-                        deuceCount_players.entrySet().stream().max(Map.Entry.comparingByValue()).get().getKey());
-
-                List<Player> playersMostDeuceLost = deuceCount_players.entrySet().stream()
-                        .filter(e -> e.getValue() == maxDeuceLost)
-                        .map(Map.Entry::getKey)
-                        .collect(Collectors.toList());
-
-                playerMostDeuceLostDesc = playersMostDeuceLost.stream().
-                        map(player -> maxDeuceLost + " games --> " + player.getNameAsLink())
-                        .collect(Collectors.joining("<br>"));
-            }
-            shameList.add(new RecordStat("Most deuce games lost (Player)", playerMostDeuceLostDesc));
-        }
-
-        //most deuces lost - team
-        {
-            String teamMostDeuceLostDesc = NO_DATA;
-            if(deuceCountLost_teams.size()>0) {
-                Integer maxDeuceLost = deuceCountLost_teams.get(
-                        deuceCountLost_teams.entrySet().stream().max(Map.Entry.comparingByValue()).get().getKey());
-
-                List<Team> teamsMostDeuceLost = deuceCountLost_teams.entrySet().stream()
-                        .filter(e -> e.getValue() == maxDeuceLost)
-                        .map(Map.Entry::getKey)
-                        .collect(Collectors.toList());
-
-                teamMostDeuceLostDesc = teamsMostDeuceLost.stream().
-                        map(team -> maxDeuceLost + " games --> " + team.getNameAsLink())
-                        .collect(Collectors.joining("<br>"));
-            }
-            shameList.add(new RecordStat("Most deuce games lost (Team)", teamMostDeuceLostDesc));
-        }
-
         //least attendance - player
         {
-            String playerLeastAttendanceDesc = NO_DATA;
+            String playerLeastAttendanceDesc = NO_DATA_HTML;
             if(attendanceMap_players.size()>0) {
                 Map<Player, Integer> attendanceCount_players = attendanceMap_players.entrySet().stream().collect(Collectors.toMap(
                         entry -> entry.getKey(),
@@ -702,7 +625,7 @@ public class RecordsController {
 
         //least attendance - team
         {
-            String teamLeastAttendanceDesc = NO_DATA;
+            String teamLeastAttendanceDesc = NO_DATA_HTML;
             if(attendanceMap_teams.size()>0) {
                 Map<Team, Integer> attendanceCount_teams = attendanceMap_teams.entrySet().stream().collect(Collectors.toMap(
                         entry -> entry.getKey(),
@@ -723,9 +646,85 @@ public class RecordsController {
             shameList.add(new RecordStat("Least attendance (Team)", teamLeastAttendanceDesc));
         }
 
+        //most losses - player
+        {
+            String playerMostLostDesc = NO_DATA_HTML;
+            if(lostCount_players.size()>0) {
+                Integer maxLost = lostCount_players.get(
+                        lostCount_players.entrySet().stream().max(Map.Entry.comparingByValue()).get().getKey());
+
+                List<Player> playersMostLost = lostCount_players.entrySet().stream()
+                        .filter(e -> e.getValue() == maxLost)
+                        .map(Map.Entry::getKey)
+                        .collect(Collectors.toList());
+
+                playerMostLostDesc = playersMostLost.stream().
+                        map(player -> maxLost + " games --> " + player.getNameAsLink())
+                        .collect(Collectors.joining("<br>"));
+            }
+            shameList.add(new RecordStat("Most games lost (Player)", playerMostLostDesc));
+        }
+
+        //most losses - team
+        {
+            String teamMostLostDesc = NO_DATA_HTML;
+            if(lostCount_teams.size()>0) {
+                Integer maxLost = lostCount_teams.get(
+                        lostCount_teams.entrySet().stream().max(Map.Entry.comparingByValue()).get().getKey());
+
+                List<Team> teamsMostLost = lostCount_teams.entrySet().stream()
+                        .filter(e -> e.getValue() == maxLost)
+                        .map(Map.Entry::getKey)
+                        .collect(Collectors.toList());
+
+                teamMostLostDesc = teamsMostLost.stream().
+                        map(team -> maxLost + " games --> " + team.getNameAsLink())
+                        .collect(Collectors.joining("<br>"));
+            }
+            shameList.add(new RecordStat("Most games lost (Team)", teamMostLostDesc));
+        }
+
+        //most deuces lost - player
+        {
+            String playerMostDeuceLostDesc = NO_DATA_HTML;
+            if(deuceCount_players.size()>0) {
+                Integer maxDeuceLost = deuceCount_players.get(
+                        deuceCount_players.entrySet().stream().max(Map.Entry.comparingByValue()).get().getKey());
+
+                List<Player> playersMostDeuceLost = deuceCount_players.entrySet().stream()
+                        .filter(e -> e.getValue() == maxDeuceLost)
+                        .map(Map.Entry::getKey)
+                        .collect(Collectors.toList());
+
+                playerMostDeuceLostDesc = playersMostDeuceLost.stream().
+                        map(player -> maxDeuceLost + " games --> " + player.getNameAsLink())
+                        .collect(Collectors.joining("<br>"));
+            }
+            shameList.add(new RecordStat("Most deuce games lost (Player)", playerMostDeuceLostDesc));
+        }
+
+        //most deuces lost - team
+        {
+            String teamMostDeuceLostDesc = NO_DATA_HTML;
+            if(deuceCountLost_teams.size()>0) {
+                Integer maxDeuceLost = deuceCountLost_teams.get(
+                        deuceCountLost_teams.entrySet().stream().max(Map.Entry.comparingByValue()).get().getKey());
+
+                List<Team> teamsMostDeuceLost = deuceCountLost_teams.entrySet().stream()
+                        .filter(e -> e.getValue() == maxDeuceLost)
+                        .map(Map.Entry::getKey)
+                        .collect(Collectors.toList());
+
+                teamMostDeuceLostDesc = teamsMostDeuceLost.stream().
+                        map(team -> maxDeuceLost + " games --> " + team.getNameAsLink())
+                        .collect(Collectors.joining("<br>"));
+            }
+            shameList.add(new RecordStat("Most deuce games lost (Team)", teamMostDeuceLostDesc));
+        }
+
         //longest losing streak - player
         {
-            String playerLongestLostStreakDesc = NO_DATA;
+            String playerLongestLostStreakDesc = NO_DATA_HTML;
             if(streakMap_players.size()>0) {
 
                 Map<Player, List<GameStreak>> streakMapOnlyLost_players = streakMap_players.entrySet().stream().collect(Collectors.toMap(
@@ -739,10 +738,9 @@ public class RecordsController {
                         int currentSteakCount = streak.getGameList().size();
                         if (currentSteakCount>0 && currentSteakCount>longestLostStreakCount){
                             longestLostStreaks.clear(); //we have a new highest
-                            longestLostStreakCount=streak.getGameList().size();
+                            longestLostStreakCount=currentSteakCount;
                             longestLostStreaks.add(streak);
-                        }else if(streak.getGameList().size()>longestLostStreakCount){
-                            longestLostStreakCount=streak.getGameList().size();
+                        }else if(currentSteakCount==longestLostStreakCount){
                             longestLostStreaks.add(streak); //we have a combined topper
                         }
                     }
@@ -755,8 +753,8 @@ public class RecordsController {
                             GameV2 endStreak = gameStreak.getGameList().get(0);
 
                             return gameStreak.getGameList().size() + " games --> " + gameStreak.player.getNameAsLink() + ": "
-                                    + startStreak.getGame_idAsLink() + " (" + startStreak.getPlayedOn_IST() + ") to "
-                                    + endStreak.getGame_idAsLink() + " (" + endStreak.getPlayedOn_IST() + ")";
+                                    + startStreak.getGame_idAsLinktoMatchHist(season_id) + " (" + startStreak.getPlayedOn_IST() + ") to "
+                                    + endStreak.getGame_idAsLinktoMatchHist(season_id) + " (" + endStreak.getPlayedOn_IST() + ")";
                         })
                         .collect(Collectors.joining("<br>"));
             }
@@ -765,12 +763,12 @@ public class RecordsController {
 
         //longest losing streak - team
         {
-            String teamLongestLostStreakDesc = NO_DATA;
+            String teamLongestLostStreakDesc = NO_DATA_HTML;
             if(streakMap_teams.size()>0) {
 
                 Map<Team, List<GameStreak>> streakMapOnlyLost_teams = streakMap_teams.entrySet().stream().collect(Collectors.toMap(
                         Map.Entry::getKey,
-                        e -> filterStreaksByResult("WON", e.getValue())));
+                        e -> filterStreaksByResult("LOST", e.getValue())));
 
                 int longestLostStreakCount=0;
                 List<GameStreak> longestLosingStreaks = new ArrayList<>();
@@ -779,10 +777,9 @@ public class RecordsController {
                         int currentSteakCount = streak.getGameList().size();
                         if (currentSteakCount>0 && currentSteakCount>longestLostStreakCount){
                             longestLosingStreaks.clear(); //we have a new highest
-                            longestLostStreakCount=streak.getGameList().size();
+                            longestLostStreakCount=currentSteakCount;
                             longestLosingStreaks.add(streak);
-                        }else if(streak.getGameList().size()>longestLostStreakCount){
-                            longestLostStreakCount=streak.getGameList().size();
+                        }else if(currentSteakCount==longestLostStreakCount){
                             longestLosingStreaks.add(streak); //we have a combined topper
                         }
                     }
@@ -795,8 +792,8 @@ public class RecordsController {
                             GameV2 endStreak = gameStreak.getGameList().get(0);
 
                             return gameStreak.getGameList().size() + " games --> " + gameStreak.team.getNameAsLink() + ": "
-                                    + startStreak.getGame_idAsLink() + " (" + startStreak.getPlayedOn_IST() + ") to "
-                                    + endStreak.getGame_idAsLink() + " (" + endStreak.getPlayedOn_IST() + ")";
+                                    + startStreak.getGame_idAsLinktoMatchHist(season_id) + " (" + startStreak.getPlayedOn_IST() + ") to "
+                                    + endStreak.getGame_idAsLinktoMatchHist(season_id) + " (" + endStreak.getPlayedOn_IST() + ")";
                         })
                         .collect(Collectors.joining("<br>"));
             }
@@ -842,201 +839,4 @@ public class RecordsController {
         }
     }
 
-        /*@GetMapping("/records")
-    public String showRecords(Model model) {
-
-List<GameV2> highestScore = gameV2Service.getHighestScore();
-        Long start=0L, end=0L;
-        float diff=0;
-
-        start = System.currentTimeMillis();
-
-        {
-            //hall of fame
-            List<RecordStat> fameList = new ArrayList<>();
-
-            //biggest win
-            String biggestWinDesc = highestScore.stream().
-                    map(game -> Math.abs(game.getScore1() - game.getScore2()) + " pts --> " + game.getGame_idAsLink() + ": " + game.getWinningResultWithScore()).
-                    collect(Collectors.joining("<br>"));
-            fameList.add(new RecordStat("Biggest Win", biggestWinDesc));
-
-            //most played (player)
-            List<Object[]> playerMostPlayed = playerService.getPlayerWithHighestPlayedCount();
-            String playerMostPlayedDesc = playerMostPlayed.stream().
-                    map(row -> {
-                        Player p = playerService.findById(Long.parseLong(row[0].toString())).get();
-                        BigInteger playedCnt = (BigInteger) row[1];
-                        return playedCnt + " games --> " + p.getNameAsLink();
-                    }).collect(Collectors.joining("<br>"));
-            fameList.add(new RecordStat("Most games played (Player)", playerMostPlayedDesc));
-
-            //most played (team)
-            List<Object[]> teamMostPlayed = teamService.getTeamWithHighestPlayedCount();
-            String teamMostPlayedDesc = teamMostPlayed.stream().
-                    map(row -> {
-                        Team t = teamService.findById(Long.parseLong(row[0].toString())).get();
-                        BigInteger playedCnt = (BigInteger) row[1];
-                        return playedCnt + " games --> " + t.getNameAsLink();
-                    }).collect(Collectors.joining("<br>"));
-            fameList.add(new RecordStat("Most games played (Team)", teamMostPlayedDesc));
-
-            //most won (player)
-            List<Object[]> playerMostWon = playerService.getPlayerWithHighestWinCount();
-            String playerMostWonDesc = playerMostWon.stream().
-                    map(row -> {
-                        Player p = playerService.findById(Long.parseLong(row[0].toString())).get();
-                        BigInteger wonCnt = (BigInteger) row[1];
-                        return wonCnt + " games --> " + p.getNameAsLink();
-                    }).collect(Collectors.joining("<br>"));
-            fameList.add(new RecordStat("Most games won (Player)", playerMostWonDesc));
-
-            //most won (team)
-            List<Object[]> teamMostWon = teamService.getTeamWithHighestWinCount();
-            String teamMostWonDesc = teamMostWon.stream().
-                    map(row -> {
-                        Team t = teamService.findById(Long.parseLong(row[0].toString())).get();
-                        BigInteger wonCnt = (BigInteger) row[1];
-                        return wonCnt + " games --> " + t.getNameAsLink();
-                    }).collect(Collectors.joining("<br>"));
-            fameList.add(new RecordStat("Most games won (Team)", teamMostWonDesc));
-
-            //most attendance - player
-            List<Object[]> playerMostAttendance = playerService.getPlayerWithHighestAttendance();
-            String playerMostAttendanceDesc = playerMostAttendance.stream().
-                    map(row -> {
-                        Player p = playerService.findById(Long.parseLong(row[0].toString())).get();
-                        BigInteger matchDayCnt = (BigInteger) row[1];
-                        return matchDayCnt + " matchdays --> " + p.getNameAsLink();
-                    }).collect(Collectors.joining("<br>"));
-            fameList.add(new RecordStat("Most attendance (Player)", playerMostAttendanceDesc));
-
-            //most attendance - team
-            List<Object[]> teamMostAttendance = teamService.getTeamWithHighestAttendance();
-            String teamMostAttendanceDesc = teamMostAttendance.stream().
-                    map(row -> {
-                        Team t = teamService.findById(Long.parseLong(row[0].toString())).get();
-                        BigInteger matchDayCnt = (BigInteger) row[1];
-                        return matchDayCnt + " matchdays --> " + t.getNameAsLink();
-                    }).collect(Collectors.joining("<br>"));
-            fameList.add(new RecordStat("Most attendance (Team)", teamMostAttendanceDesc));
-
-            //best winning streak - player
-            List<Object[]> playerBestWinningStreak = playerService.getBestWinningStreak();
-            String playerBestWinningStreakDesc = playerBestWinningStreak.stream().
-                    map(row -> {
-                        Player p = playerService.findById(Long.parseLong(row[0].toString())).get();
-                        GameV2 from_game = gameV2Service.findById(Long.parseLong(row[2].toString())).get();
-                        GameV2 to_game = gameV2Service.findById(Long.parseLong(row[3].toString())).get();
-                        Integer matchCnt = ((BigInteger) row[5]).intValue();
-                        return matchCnt + " games --> " + p.getNameAsLink() + ": "
-                                + from_game.getGame_idAsLink() + " (" + from_game.getPlayedOn_IST() + ") to "
-                                + to_game.getGame_idAsLink() + " (" + to_game.getPlayedOn_IST() + ")";
-                    }).collect(Collectors.joining("<br>"));
-            fameList.add(new RecordStat("Longest winning streak (Player)", playerBestWinningStreakDesc));
-
-            //best winning streak = team
-            fameList.add(new RecordStat("Longest winning streak (Team)", "todo"));
-
-            model.addAttribute("fameRecords", fameList);
-        }
-        end = System.currentTimeMillis();
-        diff = (end - start) / 1000F;
-        System.out.println(diff);
-        start = System.currentTimeMillis();
-        {
-            //hall of shame
-            List<RecordStat> shameList = new ArrayList<>();
-
-            //biggest defeat
-            String biggestDefeatDesc = highestScore.stream().
-                    map(game -> Math.abs(game.getScore1() - game.getScore2()) + " pts --> " + game.getGame_idAsLink() + ": " + game.getLosingResultWithScore()).
-                    collect(Collectors.joining("<br>"));
-            shameList.add(new RecordStat("Biggest Defeat", biggestDefeatDesc));
-
-            //least played - player
-            List<Object[]> playerLeastPlayed = playerService.getPlayerWithLowestPlayedCount();
-            String playerMostPlayedDesc = playerLeastPlayed.stream().
-                    map(row -> {
-                        Player p = playerService.findById(Long.parseLong(row[0].toString())).get();
-                        BigInteger playedCnt = (BigInteger) row[1];
-                        return playedCnt + " games --> " + p.getNameAsLink();
-                    }).collect(Collectors.joining("<br>"));
-            shameList.add(new RecordStat("Least games played (Player)", playerMostPlayedDesc));
-
-            //least played - team
-            List<Object[]> teamLeastPlayed = teamService.getTeamWithLowestPlayedCount();
-            String teamLeastPlayedDesc = teamLeastPlayed.stream().
-                    map(row -> {
-                        Team t = teamService.findById(Long.parseLong(row[0].toString())).get();
-                        BigInteger playedCnt = (BigInteger) row[1];
-                        return playedCnt + " games --> " + t.getNameAsLink();
-                    }).collect(Collectors.joining("<br>"));
-            shameList.add(new RecordStat("Least games played (Team)", teamLeastPlayedDesc));
-
-            //most losses - player
-            List<Object[]> playerMostLost = playerService.getPlayerWithHighestLossCount();
-            String playerMostLostDesc = playerMostLost.stream().
-                    map(row -> {
-                        Player p = playerService.findById(Long.parseLong(row[0].toString())).get();
-                        BigInteger wonCnt = (BigInteger) row[1];
-                        return wonCnt + " games --> " + p.getNameAsLink();
-                    }).collect(Collectors.joining("<br>"));
-            shameList.add(new RecordStat("Most games lost (Player)", playerMostLostDesc));
-
-            //most losses - team
-            List<Object[]> teamMostLoss = teamService.getTeamWithHighestLossCount();
-            String teamMostLossDesc = teamMostLoss.stream().
-                    map(row -> {
-                        Team t = teamService.findById(Long.parseLong(row[0].toString())).get();
-                        BigInteger wonCnt = (BigInteger) row[1];
-                        return wonCnt + " games --> " + t.getNameAsLink();
-                    }).collect(Collectors.joining("<br>"));
-            shameList.add(new RecordStat("Most games lost (Team)", teamMostLossDesc));
-
-            //least attendance - player
-            List<Object[]> playerLeastAttendance = playerService.getPlayerWithLowestAttendance();
-            String playerLeastAttendanceDesc = playerLeastAttendance.stream().
-                    map(row -> {
-                        Player p = playerService.findById(Long.parseLong(row[0].toString())).get();
-                        BigInteger matchDayCnt = (BigInteger) row[1];
-                        return matchDayCnt + " matchdays --> " + p.getNameAsLink();
-                    }).collect(Collectors.joining("<br>"));
-            shameList.add(new RecordStat("Least attendance (Player)", playerLeastAttendanceDesc));
-
-            //least attendance - team
-            List<Object[]> teamLeastAttendance = teamService.getTeamWithLowestAttendance();
-            String teamLeastAttendanceDesc = teamLeastAttendance.stream().
-                    map(row -> {
-                        Team t = teamService.findById(Long.parseLong(row[0].toString())).get();
-                        BigInteger matchDayCnt = (BigInteger) row[1];
-                        return matchDayCnt + " matchdays --> " + t.getNameAsLink();
-                    }).collect(Collectors.joining("<br>"));
-            shameList.add(new RecordStat("Least attendance (Team)", teamLeastAttendanceDesc));
-
-            //best losing streak - player
-            List<Object[]> playerBestLosingStreak = playerService.getBestLosingStreak();
-            String playerBestLosingStreakDesc = playerBestLosingStreak.stream().
-                    map(row -> {
-                        Player p = playerService.findById(Long.parseLong(row[0].toString())).get();
-                        GameV2 from_game = gameV2Service.findById(Long.parseLong(row[2].toString())).get();
-                        GameV2 to_game = gameV2Service.findById(Long.parseLong(row[3].toString())).get();
-                        Integer matchCnt = ((BigInteger) row[5]).intValue();
-                        return matchCnt + " games --> " + p.getNameAsLink() + ": "
-                                + from_game.getGame_idAsLink() + " (" + from_game.getPlayedOn_IST() + ") to "
-                                + to_game.getGame_idAsLink() + " (" + to_game.getPlayedOn_IST() + ")";
-                    }).collect(Collectors.joining("<br>"));
-            shameList.add(new RecordStat("Longest losing streak (Player)", playerBestLosingStreakDesc));
-
-            //best losing streak - team
-            shameList.add(new RecordStat("Longest losing streak (Team)", "todo"));
-
-            model.addAttribute("shameRecords", shameList);
-        }
-        end = System.currentTimeMillis();
-        diff = (end - start) / 1000F;
-        System.out.println(diff);
-        return "showRecords";
-    }
-*/
 }

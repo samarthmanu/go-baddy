@@ -6,6 +6,7 @@ import javax.persistence.*;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -71,9 +72,8 @@ public class GameV2 {
     public Long getGame_id() {
         return game_id;
     }
-
-    public String getGame_idAsLink() {
-        return MessageFormat.format("<a href=\"updateMatch?id={0}\" title=\"Click to see match details\">#{0}</a>", game_id);
+    public String getGame_idAsLinktoMatchHist(Long season_id) {
+        return MessageFormat.format("<a href=\"matchHist?season_id={0}\" title=\"Click to goto match history page\">#{1}</a>", season_id,game_id);
     }
 
     public void setGame_id(Long game_id) {
@@ -237,7 +237,11 @@ public class GameV2 {
     }*/
 
     public List<Team> getTeams() {
-        return Arrays.asList(new Team[]{t1, t2});
+        List<Team> teams = new ArrayList<>();
+        if(t1!=null) teams.add(t1);
+        if(t2!=null) teams.add(t2);
+
+        return teams;
     }
 
 

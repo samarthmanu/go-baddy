@@ -68,7 +68,14 @@
         <title>Team Stats</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        </head>
+        <link rel="stylesheet" href="dist/sortable-tables.min.css">
+        <script src="dist/sortable-tables.min.js" type="text/javascript"></script>
+    </head>
+    <style>
+               th {
+                    background-color: #DCDCDC
+                }
+    </style>
     <body>
         <button onClick="window.location.reload();">Refresh</button>
         <input type="button" value="Back" onclick="location.href = document.referrer; return false;"/>
@@ -141,14 +148,17 @@
                             </tr>
                         </table>
             <h2>Team & Player Stats</h2>
-                                 <table border="5">
+                                 <table border="5" class="sortable-table">
+                                 <thead>
                                     <tr>
                                         <th>Name</th>
-                                        <th>Played</th>
-                                        <th>Won</th>
-                                        <th>Lost</th>
-                                        <th>Win %</th>
+                                        <th class="numeric-sort">Played</th>
+                                        <th class="numeric-sort">Won</th>
+                                        <th class="numeric-sort">Lost</th>
+                                        <th class="numeric-sort">Win %</th>
                                     </tr>
+                                 </thead>
+                                 <tbody>
                                     </tr>
                                          <td><a href="teamStats?team_id=${tStats.team.team_id}" title="${tStats.team.p1.name} & ${tStats.team.p2.name}">Team ${tStats.team.name}</a>
                                          <font size="-1">
@@ -171,15 +181,19 @@
                                         <td>${pStats.getWinRatio()}</td>
                                         </tr>
                                     </#list>
+                                 </tbody>
                                 </table>
                             <h2>Team Points</h2>
-                                 <table border="5">
+                                 <table border="5" class="sortable-table">
+                                    <thead>
                                     <tr>
                                         <th>Rule</th>
-                                        <th>Points</th>
-                                        <th>Count</th>
-                                        <th>Accumulated Pts</th>
+                                        <th class="numeric-sort">Points</th>
+                                        <th class="numeric-sort">Count</th>
+                                        <th class="numeric-sort">Accumulated Pts</th>
                                     </tr>
+                                    </thead>
+                                    <tbody>
                                     <#list tStats.fMap?keys as key>
                                     <#if key=='total_pts'><#continue></#if>
                                         <tr>
@@ -189,22 +203,26 @@
                                             <td>${tStats.fMap[key].total}</td>
                                         </tr>
                                     </#list>
+                                    </tbody>
                                         <tr>
                                             <th colspan=3 align="left">TOTAL</th>
                                             <th align="left">${tStats.fMap.total_pts.total}</th>
                                         </tr>
                                 </table>
             <h2>Match History</h2>
-                <table border="5">
+                <table border="5" class="sortable-table">
+                    <thead>
                     <tr>
-                        <th>Id</th>
+                        <th class="numeric-sort">Id</th>
                         <th>Played on</th>
                         <th>Team1</th>
-                        <th>Score1</th>
+                        <th class="numeric-sort">Score1</th>
                         <th>Team2</th>
-                        <th>Score2</th>
+                        <th class="numeric-sort">Score2</th>
                         <th>Result</th>
                     </tr>
+                    </thead>
+                    <tbody>
                    <#list games as game>
                                            <tr>
                                                <td><a href="updateMatch?id=${game.game_id}" title="Click to update match details">${game.game_id}</a>
@@ -244,6 +262,7 @@
                                                </td>
                                            </tr>
                       </#list>
+                      </tbody>
                 </table>
     </body>
 </html>

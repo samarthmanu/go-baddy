@@ -1,6 +1,7 @@
 package com.buncode.util;
 
 import com.buncode.model.PlayerStats;
+import com.buncode.model.PointsConfig;
 import com.buncode.model.TeamStats;
 
 import java.util.Comparator;
@@ -49,6 +50,13 @@ public class CustomSort {
             }else{
                 return Double.compare(a.getWinRatio(), b.getWinRatio());
             }
+        }
+    }
+    public static class SortPointsConfig implements Comparator<PointsConfig>
+    {
+        public int compare(PointsConfig b, PointsConfig a)
+        {
+            return Integer.compare(a.getMultiplier(), b.getMultiplier());
         }
     }
 

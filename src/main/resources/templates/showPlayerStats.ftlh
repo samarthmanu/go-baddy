@@ -68,7 +68,14 @@
         <title>Player Stats</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+             <link rel="stylesheet" href="dist/sortable-tables.min.css">
+            <script src="dist/sortable-tables.min.js" type="text/javascript"></script>
     </head>
+    <style>
+               th {
+                    background-color: #DCDCDC
+                }
+    </style>
     <body>
     <button onClick="window.location.reload();">Refresh</button>
     <input type="button" value="Back" onclick="location.href = document.referrer; return false;"/>
@@ -138,14 +145,17 @@
             </table>
         <h2>Player & Team Stats</h2>
 
-                                 <table border="5">
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>Played</th>
-                                        <th>Won</th>
-                                        <th>Lost</th>
-                                        <th>Win %</th>
-                                    </tr>
+                                 <table border="5" class="sortable-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th class="numeric-sort">Played</th>
+                                            <th class="numeric-sort">Won</th>
+                                            <th class="numeric-sort">Lost</th>
+                                            <th class="numeric-sort">Win %</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
                                     </tr>
                                         <td><a href="playerStats?player_id=${pStats.player.player_id}">${pStats.player.name}</a> <#if pStats.player.invalidate==true><img src="images/icon-flag.jpg" height="10" width="10" title="Player Invalidated"></#if></td>
                                         <td>${pStats.played}</td>
@@ -168,41 +178,49 @@
                                             <td>${tStats.getWinRatio()}</td>
                                         </tr>
                                     </#list>
+                                    </tbody>
                                 </table>
         <h2>Player Points</h2>
 
-                                 <table border="5">
+                                 <table border="5" class="sortable-table">
+                                    <thead>
                                     <tr>
                                         <th>Rule</th>
-                                        <th>Points</th>
-                                        <th>Count</th>
-                                        <th>Accumulated Pts</th>
+                                        <th class="numeric-sort">Points</th>
+                                        <th class="numeric-sort">Count</th>
+                                        <th class="numeric-sort">Accumulated Pts</th>
                                     </tr>
+                                    </thead>
+                                    <tbody>
                                     <#list pStats.fMap?keys as key>
-                                    <#if key=='total_pts'><#continue></#if>
-                                        <tr>
-                                            <td>${pStats.fMap[key].desc}</td>
-                                            <td>${pStats.fMap[key].multiplier}</td>
-                                            <td>${pStats.fMap[key].count}</td>
-                                            <td>${pStats.fMap[key].total}</td>
-                                        </tr>
-                                    </#list>
+                                        <#if key=='total_pts'><#continue></#if>
+                                            <tr>
+                                                <td>${pStats.fMap[key].desc}</td>
+                                                <td>${pStats.fMap[key].multiplier}</td>
+                                                <td>${pStats.fMap[key].count}</td>
+                                                <td>${pStats.fMap[key].total}</td>
+                                            </tr>
+                                        </#list>
+                                    </tbody>
                                         <tr>
                                             <th colspan=3 align="left">TOTAL</th>
                                             <th align="left">${pStats.fMap.total_pts.total}</th>
                                         </tr>
                                 </table>
         <h2>Match History</h2>
-                <table border="5">
+                <table border="5" class="sortable-table">
+                    <thead>
                     <tr>
-                        <th>Id</th>
+                        <th class="numeric-sort">Id</th>
                         <th>Played on</th>
                         <th>Team1</th>
-                        <th>Score1</th>
+                        <th class="numeric-sort">Score1</th>
                         <th>Team2</th>
-                        <th>Score2</th>
+                        <th class="numeric-sort">Score2</th>
                         <th>Result</th>
                     </tr>
+                   </thead>
+                   <tbody>
                    <#list games as game>
                                            <tr>
                                                <td><a href="updateMatch?id=${game.game_id}" title="Click to update match details">${game.game_id}</a>
@@ -242,6 +260,7 @@
                                                </td>
                                            </tr>
                       </#list>
+                   </tbody>
                 </table>
     </body>
 </html>

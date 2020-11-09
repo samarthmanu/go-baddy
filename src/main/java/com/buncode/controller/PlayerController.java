@@ -21,6 +21,8 @@ import java.text.ParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.buncode.util.Constants.NO_DATA;
+
 @Controller
 public class PlayerController {
 
@@ -120,16 +122,14 @@ public class PlayerController {
             String lastResult = playerGames.stream().findFirst().get().getResult(player);
 
             int index=1;
-            if(playerGames.stream().
-                    filter(gameV2 -> !gameV2.getResult(player).equals(lastResult)).findFirst().isPresent()) {
-                index = playerGames.indexOf(
-                        playerGames.stream().
-                                filter(gameV2 -> !gameV2.getResult(player).equals(lastResult)).findFirst().get()); //find first non matching result
+            for (;index < playerGames.size(); index++) {
+                if(!playerGames.get(index).getResult(player).equals(lastResult)) break;
             }
+
             pStats.setCurrentStreak(index + lastResult.substring(0, 1).toUpperCase());  //should be like 2W or 3L);
         }else{
-            pStats.setRecentForm(" <No Data> ");
-            pStats.setCurrentStreak(" <No Data> ");
+            pStats.setRecentForm(NO_DATA);
+            pStats.setCurrentStreak(NO_DATA);
         }
 
             model.addAttribute("pStats", pStats);

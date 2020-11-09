@@ -20,6 +20,8 @@ import java.text.ParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.buncode.util.Constants.NO_DATA;
+
 @Controller
 public class TeamController {
 
@@ -135,16 +137,14 @@ public class TeamController {
                 String lastResult = team_games.stream().findFirst().get().getResult(team);
 
                 int index=1;
-                if(team_games.stream().
-                        filter(gameV2 -> !gameV2.getResult(team).equals(lastResult)).findFirst().isPresent()) {
-                    index = team_games.indexOf(
-                            team_games.stream().
-                                    filter(gameV2 -> !gameV2.getResult(team).equals(lastResult)).findFirst().get()); //find first non matching result
+                for (;index < team_games.size(); index++) {
+                    if(!team_games.get(index).getResult(team).equals(lastResult)) break;
                 }
+
                 tStats.setCurrentStreak(index + lastResult.substring(0, 1).toUpperCase());  //should be like 2W or 3L);
             }else{
-                tStats.setRecentForm(" <No Data> ");
-                tStats.setCurrentStreak(" <No Data> ");
+                tStats.setRecentForm(NO_DATA);
+                tStats.setCurrentStreak(NO_DATA);
             }
 
             model.addAttribute("tStats", tStats);

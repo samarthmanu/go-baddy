@@ -25,7 +25,12 @@ function validateInvalidateForm(){
         <title>Update Player</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        </head>
+</head>
+    <style>
+               th {
+                    background-color: #DCDCDC
+                }
+    </style>
     <body>
     <button onClick="window.location.reload();">Refresh</button>
     <input type="button" value="Back" onclick="location.href = document.referrer; return false;"/>
