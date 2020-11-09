@@ -13,11 +13,14 @@
     <body>
     <input type="button" value="Back" onclick="location.href = document.referrer; return false;"/>
     <input type="button" onclick="location.href='/'" value="Back to Main"/>
-     <h2>Player Info</h2>
+    <br></br>
              <form name="playerForm" action="/newPlayer" method="post">
                <table border="5">
                <tr>
-                         <td>
+                    <th>New Player</th>
+               </tr>
+               <tr>
+                         <td align="center">
                          <br>
                          <label for="name">Name:</label><br>
                          <input type="text" id="name" name="name"><br><br>

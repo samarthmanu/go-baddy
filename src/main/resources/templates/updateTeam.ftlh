@@ -64,11 +64,15 @@ function validateInvalidateForm(){
            </#list>
        </select>
      <br><br>
-     -->
-     <h2>Team Info</h2>
+     <h2>Team Info</h2>-->
+     <br><br>
                <table border="5">
                <tr>
-                                <td>
+                    <th>Update Team</th>
+               </tr>
+               <tr>
+                                <td align="center">
+                                <br>
                                 <form name="invalidateForm" onsubmit="return validateInvalidateForm()" action="/invalidateTeam" method="post">
                                            <label for="team_id">Id:</label><br>
                                            <input type="text" id="team_id" name="team_id" value="${team.team_id}" readonly="readonly" style="background-color: lightgrey;">
@@ -79,7 +83,7 @@ function validateInvalidateForm(){
                                 </td>
                </tr>
                <tr>
-                         <td>
+                         <td align="center">
                         <form name="teamForm" onsubmit="return validateform()" action="/updateTeam" method="post">
                          <input type="text" id="team_id" name="team_id" value="${team.team_id}" hidden="true">
                          <br>
@@ -97,7 +101,7 @@ function validateInvalidateForm(){
                              </#list>
                          </select><br><br>
 
-                         <label for="name">Name:</label><br>
+                         <label for="name">Team Name:</label><br>
                          <input type="text" id="name" name="name" value="${team.name}"><br><br>
 
                          <label for="name">Playing Style:</label><br>

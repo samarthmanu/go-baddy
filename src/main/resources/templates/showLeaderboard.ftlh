@@ -113,10 +113,8 @@
                                         </#list>
                                     </tbody>
                                 </table>
-         <h2>Points table</h2>
-                    <table>
-                    <tr>
-                    <td style="vertical-align:top">
+         <h2>Points tables</h2>
+
                           <table border="5" class="sortable-table">
                               <thead>
                                   <tr>
@@ -143,8 +141,7 @@
                             </#list>
                             </tbody>
                           </table>
-                     </td>
-                     <td style="vertical-align:top">
+                          <br>
                           <table border="5" class="sortable-table">
                           <thead>
                               <tr>
@@ -153,7 +150,6 @@
                                   <th class="numeric-sort">Played pts</th>
                                   <th class="numeric-sort">Win pts</th>
                                   <th class="numeric-sort">Deuce pts</th>
-                                  <th class="numeric-sort">Team change pts</th>
                                   <th class="numeric-sort">Total pts</th>
                               </tr>
                             </thead>
@@ -171,19 +167,12 @@
                                     <td>${tStats.fMap.played_pts.total}</td>
                                     <td>${tStats.fMap.won_pts.total}</td>
                                     <td>${tStats.fMap.deuce_pts.total}</td>
-                                    <td>N/A</td>
                                     <td>${tStats.fMap.total_pts.total}</td>
                                 </tr>
                             </#list>
                             </tbody>
                           </table>
-                     </td>
-                     </tr>
-                     </table>
-     <h2>Stats table</h2>
-                  <table>
-                  <tr>
-                  <td style="vertical-align:top">
+     <h2>Stats tables</h2>
                   <table border="5" class="sortable-table">
                   <thead>
                       <tr>
@@ -206,8 +195,7 @@
                     </#list>
                     </tbody>
                     </table>
-                    </td>
-                    <td style="vertical-align:top">
+                    <br>
                     <table border="5" class="sortable-table">
                       <thead>
                       <tr>
@@ -236,9 +224,5 @@
                     </#list>
                     </tbody>
                   </table>
-                </td>
-                </tr>
-                </table>
-
     </body>
 </html>

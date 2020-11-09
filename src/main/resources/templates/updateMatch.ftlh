@@ -185,11 +185,13 @@ function validateScoreForm(){
     <button onClick="window.location.reload();">Refresh</button>
     <input type="button" value="Back" onclick="location.href = document.referrer; return false;"/>
     <input type="button" onclick="location.href='/'" value="Back to Main"/>
-     <h2>Update Match</h2>
-     <#if adminConfig.match_lock==true><p style="color:red">Match update/submit is currently locked by admin</p></#if>
-     <#if game.invalidate==true><p style="color:red">This match is currently marked as INVALID</p></#if>
+    <#if adminConfig.match_lock==true><p style="color:red">Match update/submit is currently locked by admin</p></#if>
+    <#if game.invalidate==true><p style="color:red">This match is currently marked as INVALID</p></#if>
               <fieldset style="display:inline-block;border: none;" <#if adminConfig.match_lock==true>disabled="disabled"</#if>>
                <table border="5">
+               <tr>
+                    <th colspan="3">Update Match</th>
+               </tr>
                <tr>
                         <td colspan="3" align="center">
                         <br>

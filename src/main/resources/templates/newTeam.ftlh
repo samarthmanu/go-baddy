@@ -40,11 +40,14 @@
     <body>
     <input type="button" value="Back" onclick="location.href = document.referrer; return false;"/>
     <input type="button" onclick="location.href='/'" value="Back to Main"/>
-     <h2>Team Info</h2>
+     <br><br>
              <form name="teamForm" onsubmit="return validateform()" action="/newTeam" method="post">
                <table border="5">
                <tr>
-                         <td>
+                    <th>New Team</th>
+               </tr>
+               <tr>
+                         <td align="center">
                          <br>
                          <label for="p1">Player1:</label><br>
                          <select id="p1" name="p1">

@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.MessageFormat;
 import java.text.ParseException;
@@ -203,7 +202,7 @@ public class PlayerController {
             //check if another player with same name
             Player name_taken = playerService.getPlayerByName(name);
 
-            if (name_taken != null && name_taken != player) {
+            if (name_taken != null && !name_taken.equals(player)) {
                 throw new YouShallNotPassException(
                         MessageFormat.format("Error updating player : Another player exists with same name [{0}]", name));
             }

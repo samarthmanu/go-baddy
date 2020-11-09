@@ -232,8 +232,12 @@ public class TeamController {
 
     @PostMapping("/updateTeam")
     @ResponseBody
-    public String updateTeam(int team_id, String name, int p1, int p2, String playing_style, String signature_moves, String alias) throws YouShallNotPassException {
+    //public String updateTeam(int team_id, String name, int p1, int p2, String playing_style, String signature_moves, String alias) throws YouShallNotPassException {
+    public String updateTeam(int team_id, String name, String playing_style, String signature_moves, String alias) throws YouShallNotPassException {
+
         Team team = teamService.findById(team_id).get();
+
+        /* disabled change of players
         Player player1 = playerService.findById(p1).get();
         Player player2 = playerService.findById(p2).get();
 
@@ -245,7 +249,7 @@ public class TeamController {
         Team team_combo_taken = teamService.getTeamByPlayerCombo(player1, player2);
         if (team_combo_taken != null && team_combo_taken!=team) {
             throw new YouShallNotPassException("Error updating team: Another team exists with same players combination [Team " + team_combo_taken.getName() + "]");
-        }
+        }*/
 
         if (name==null || name.trim().isEmpty()){
             throw new YouShallNotPassException("Error updating team : name value cant be empty!");
@@ -253,7 +257,7 @@ public class TeamController {
 
         //check if team already exists with this name
         Team team_name_taken = teamService.getTeamByName(name);
-        if (team_name_taken != null && team_combo_taken!=team) {
+        if (team_name_taken != null) {
             throw new YouShallNotPassException("Error updating team: Another team exists with same name [Team " + team_name_taken.getName() + "]");
         }
 
@@ -261,8 +265,8 @@ public class TeamController {
 
         synchronized (team) {
             team.setName(name);
-            team.setP1(player1);
-            team.setP2(player2);
+            //team.setP1(player1);
+            //team.setP2(player2);
             team.setPlaying_style(playing_style);
             team.setSignature_moves(signature_moves);
             team.setAlias(alias);

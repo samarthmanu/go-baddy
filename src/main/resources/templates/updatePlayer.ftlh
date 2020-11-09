@@ -43,10 +43,14 @@ function validateInvalidateForm(){
             </#list>
         </select>
      <br><br>
-     -->
-     <h2>Player Info</h2>
+     <h2>Player Info</h2>-->
+     <br></br>
      <#if player.invalidate==true><p style="color:red">This player is currently marked as INVALID</p></#if>
+     </br>
                <table border="5">
+               <tr>
+                    <th colspan="3">Update Player</th>
+               </tr>
                <tr>
                         <td colspan="3" align="center">
                         <br>
@@ -59,7 +63,7 @@ function validateInvalidateForm(){
                        </td>
                 </tr>
                <tr>
-                    <td>
+                    <td align="center">
                     <form name="playerForm" onsubmit="return validateform()" action="/updatePlayer" method="post">
                          <fieldset style="display:inline-block;border: none;" <#if player.invalidate==true>disabled="disabled"</#if>>
                          <input type="text" id="player_id" name="player_id" value="${player.player_id}" hidden="true">

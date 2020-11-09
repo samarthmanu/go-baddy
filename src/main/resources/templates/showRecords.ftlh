@@ -95,9 +95,6 @@
                                                </form>
         <h2>Records</h2>
                 <#noautoesc>
-                <table>
-                <tr>
-                <td style="vertical-align:top">
                 <table border="5">
                     <tr>
                         <th colspan=2>Hall of Fame</th>
@@ -108,10 +105,6 @@
                             <td>${record.holder}</td>
                         </tr>
                     </#list>
-                </table>
-                </td>
-                <td style="vertical-align:top">
-                <table border="5">
                     <tr>
                         <th colspan=2>Hall of Shame</th>
                     </tr>
@@ -121,8 +114,7 @@
                             <td >${record.holder}</td>
                         </tr>
                     </#list>
-               </table>
-               </td>
+                </table>
                </#noautoesc>
     </body>
 </html>

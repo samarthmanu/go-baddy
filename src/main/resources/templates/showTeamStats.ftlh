@@ -105,7 +105,7 @@
                                                <button onclick="return validateCustomDates()">Go</button>
                                         </div>
                                </form>
-          <h2>Team Info:</h2>
+          <h2>Team Info</h2>
             <table border="5">
                 <tr>
                     <th>Name</th>

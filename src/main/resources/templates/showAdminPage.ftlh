@@ -22,10 +22,13 @@
     <button onClick="window.location.reload();">Refresh</button>
     <input type="button" value="Back" onclick="location.href = document.referrer; return false;"/>
     <input type="button" onclick="location.href='/'" value="Back to Main"/>
-     <h2>Admin settings</h2>
+    <br><br>
                <table border="5">
+               <tr>
+                    <th colspan="2">Admin Settings</th>
+               </tr>
               <tr>
-                  <form name="adminForm1" action="/toggleMatchLock" method="post">
+                  <form name="adminForm" action="/toggleMatchLock" method="post">
                         <td>
                         <br>
                             <input type="checkbox" id="match_lock" name="match_lock" hidden="true" <#if adminConfig.match_lock==true>checked</#if>>
