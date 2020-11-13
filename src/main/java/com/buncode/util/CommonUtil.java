@@ -25,6 +25,11 @@ public class CommonUtil {
         return res;
     }
 
+    public static double calcRatio(int x, int y){
+        if (y==0) return 0.0;
+        return Math.round(((float) x/(float) y) * 100.0)/100.0;
+    }
+
 /*    public static Timestamp getCurrentTimestamp_IST(){
         ZonedDateTime timeInIndia = ZonedDateTime.now(ZoneId.of("Asia/Kolkata"));
         return Timestamp.from(timeInIndia.toInstant());

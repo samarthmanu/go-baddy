@@ -10,7 +10,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     @ResponseBody
     public String handleException(Exception e){
-        return "<h2>" + e + "</h>";
+        return "<input type=\"button\" value=\"Back\" onclick=\"location.href = document.referrer; return false;\"/>\n" +
+                "<input type=\"button\" onclick=\"location.href='/'\" value=\"Back to Main\"/>" +
+                "<h2>" + e + "</h>";
     }
 
 }

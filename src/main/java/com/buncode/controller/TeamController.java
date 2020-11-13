@@ -20,7 +20,7 @@ import java.text.ParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.buncode.util.Constants.NO_DATA;
+import static com.buncode.util.Constants.NO_DATA_HTML;
 
 @Controller
 public class TeamController {
@@ -48,13 +48,15 @@ public class TeamController {
 
     @GetMapping("/updateTeam")
     public String getTeam(@RequestParam(value = "id", required = false) Long team_id, Model model) {
-        List<Player> players = playerService.findAllValid();
+        List<Player> players = playerService.findAll().stream().filter(player -> !player.isInvalidate()).collect(Collectors.toList());
         List<Team> teams = teamService.findAll();
         model.addAttribute("players", players);
         model.addAttribute("teams", teams);
 
         if (teams.size() == 0) {
-            return "Looks like no teams configured";
+            return "<input type=\"button\" value=\"Back\" onclick=\"location.href = document.referrer; return false;\"/>\n" +
+                    "<input type=\"button\" onclick=\"location.href='/'\" value=\"Back to Main\"/>" +
+                    "Looks like no teams configured";
         }
 
         //player info
@@ -66,7 +68,7 @@ public class TeamController {
 
     @GetMapping("/newTeam")
     public String newTeam(@RequestParam(value = "id", required = false) Long team_id, Model model) {
-        List<Player> players = playerService.findAllValid();
+        List<Player> players = playerService.findAll().stream().filter(player -> !player.isInvalidate()).collect(Collectors.toList());
         model.addAttribute("players", players);
 
         return "newTeam";
@@ -88,7 +90,9 @@ public class TeamController {
         model.addAttribute("seasons", seasons);
 
         if (teams.size() == 0) {
-            return "Looks like no teams configured";
+            return "<input type=\"button\" value=\"Back\" onclick=\"location.href = document.referrer; return false;\"/>\n" +
+                    "<input type=\"button\" onclick=\"location.href='/'\" value=\"Back to Main\"/>" +
+                    "Looks like no teams configured";
         }
 
         //team info
@@ -99,13 +103,13 @@ public class TeamController {
         Season season = null;
         if(season_id==null) {
             season = seasons.get(seasons.size()-1) ;
-            allGames = gameV2Service.findAllValidBySeason(season);
+            allGames = gameV2Service.findAllBySeason(season);
             model.addAttribute("season_id", season.getSeason_id());
         }else if(season_id==-1) {
-            allGames = gameV2Service.findAllValid();  //all-time
+            allGames = gameV2Service.findAll();  //all-time
             model.addAttribute("season_id", -1);
         }else if (season_id==0){
-            allGames = gameV2Service.findAllValidByDateRange(
+            allGames = gameV2Service.findAllByDateRange(
                     CommonUtil.stringToTimeStamp(fromDate + " 00:00:01"),
                     CommonUtil.stringToTimeStamp(toDate + " 23:59:59"));  //custom range
             model.addAttribute("fromDate", fromDate);
@@ -113,13 +117,13 @@ public class TeamController {
             model.addAttribute("season_id", 0);
         }else{
             season = seasonService.findById(season_id).get();
-            allGames = gameV2Service.findAllValidBySeason(season); //season wise
+            allGames = gameV2Service.findAllBySeason(season); //season wise
             model.addAttribute("season_id", season.getSeason_id());
         }
 
         //match history
         List<GameV2> team_games = allGames.stream().filter(gameV2 ->
-                gameV2.getTeams().contains(team)).collect(Collectors.toList());//gameV2Service.getGamesPlayedByTeam(team);
+                gameV2.getTeams().contains(team) && !gameV2.isInvalidate()).collect(Collectors.toList());//gameV2Service.getGamesPlayedByTeam(team);
         model.addAttribute("games", team_games);//team_games.stream().limit(25).collect(Collectors.toList())); //show only last 25 games
 
         //teamStats
@@ -143,8 +147,8 @@ public class TeamController {
 
                 tStats.setCurrentStreak(index + lastResult.substring(0, 1).toUpperCase());  //should be like 2W or 3L);
             }else{
-                tStats.setRecentForm(NO_DATA);
-                tStats.setCurrentStreak(NO_DATA);
+                tStats.setRecentForm(NO_DATA_HTML);
+                tStats.setCurrentStreak(NO_DATA_HTML);
             }
 
             model.addAttribute("tStats", tStats);
@@ -160,12 +164,7 @@ public class TeamController {
                     gameV2.getPlayers().contains(p1)).collect(Collectors.toList());
 
             PlayerStats p1Stat = playerController.calculatePlayerStats(p1, p1Games, false);
-            /*
 
-            int played = gameV2Service.getGamesPlayedCountByPlayer(p1);
-            int won = gameV2Service.getGamesWonCountByPlayer(p1);
-
-            PlayerStats p1Stat = new PlayerStats(p1, played, won, (played-won));*/
             playerStats.add(p1Stat);
         }
 
@@ -178,10 +177,6 @@ public class TeamController {
 
             PlayerStats p2Stat = playerController.calculatePlayerStats(p2, p2Games, false);
 
-            /*int played = gameV2Service.getGamesPlayedCountByPlayer(p2);
-            int won = gameV2Service.getGamesWonCountByPlayer(p2);
-
-            PlayerStats p2Stat = new PlayerStats(p2, played, won, (played-won));*/
             playerStats.add(p2Stat);
         }
         Collections.sort(playerStats, new CustomSort.SortPlayerStatsByWinRatio());
@@ -226,7 +221,10 @@ public class TeamController {
         teamService.save(team);
 
         teamService.findAll(); //refresh teams cache
-        String result = MessageFormat.format("<h2>Team [{0}] created successfully</h2>", team.getName());
+        String result = MessageFormat.format(
+                "<input type=\"button\" value=\"Back\" onclick=\"location.href = document.referrer; return false;\"/>\n" +
+                        "<input type=\"button\" onclick=\"location.href='/'\" value=\"Back to Main\"/>" +
+                "<h2>Team [{0}] created successfully</h2>", team.getName());
         return result;
     }
 
@@ -257,11 +255,9 @@ public class TeamController {
 
         //check if team already exists with this name
         Team team_name_taken = teamService.getTeamByName(name);
-        if (team_name_taken != null) {
+        if (team_name_taken != null && !team_name_taken.equals(team)) {
             throw new YouShallNotPassException("Error updating team: Another team exists with same name [Team " + team_name_taken.getName() + "]");
         }
-
-        Timestamp now = new Timestamp(System.currentTimeMillis());
 
         synchronized (team) {
             team.setName(name);
@@ -275,7 +271,10 @@ public class TeamController {
         }
 
         teamService.findAll(); //refresh teams cache
-        return MessageFormat.format("<h2>Team [{0}] updated successfully</h2>", team.getName());
+        return MessageFormat.format(
+                "<input type=\"button\" value=\"Back\" onclick=\"location.href = document.referrer; return false;\"/>\n" +
+                        "<input type=\"button\" onclick=\"location.href='/'\" value=\"Back to Main\"/>" +
+                "<h2>Team [{0}] updated successfully</h2>", team.getName());
     }
 
     @PostMapping("/invalidateTeam")
@@ -289,7 +288,10 @@ public class TeamController {
         }
 
         teamService.findAll(); //refresh teams cache
-        return(MessageFormat.format("<h2>Team [{0}] deleted successfully</h2>", team.getName()));
+        return(MessageFormat.format(
+                "<input type=\"button\" value=\"Back\" onclick=\"location.href = document.referrer; return false;\"/>\n" +
+                        "<input type=\"button\" onclick=\"location.href='/'\" value=\"Back to Main\"/>" +
+                "<h2>Team [{0}] deleted successfully</h2>", team.getName()));
     }
 
     public TeamStats calculateTeamStats(Team team, List<GameV2> teamGames, boolean calcFstats){
@@ -311,6 +313,7 @@ public class TeamController {
         int won_count = teamGames.stream().filter(game -> game.getResult(team).equals("WON")).collect(Collectors.toList()).size();//gameV2Service.getGamesWonCountByTeam(team);
         int lost_count = (played_count - won_count);
         int deuce_count = teamGames.stream().filter(game -> game.getScore1()+game.getScore2()>40).collect(Collectors.toList()).size();//gameV2Service.getDeuceGamesCountByTeam(team);
+        int big_win_count = teamGames.stream().filter(game -> game.getResult(team).equals("WON") && (game.getWinningScore()-game.getLosingScore()>=10)).collect(Collectors.toList()).size();
 
         TeamStats tStats = new TeamStats(team, played_count, won_count, lost_count);
 
@@ -359,6 +362,15 @@ public class TeamController {
                 fTotal += pts_total;
             }
             */
+
+        //for big wins (win by >= 10 points)
+        {
+            PointsConfig pts_config = pointsConfigService.findById(Constants.POINTS_RULE_ID_FOR_BIGWIN_GAMES).get();
+            int pts_total = big_win_count * pts_config.getMultiplier();
+            FantasyStat fStat = new FantasyStat(pts_config.getRule(), big_win_count, pts_config.getMultiplier(), pts_total);
+            fMap.put("big_win_pts", fStat);
+            fTotal += pts_total;
+        }
 
         //for deuce games
         {

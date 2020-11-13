@@ -77,6 +77,7 @@
                 }
     </style>
     <body>
+        <#noautoesc>
         <button onClick="window.location.reload();">Refresh</button>
         <input type="button" value="Back" onclick="location.href = document.referrer; return false;"/>
         <input type="button" onclick="location.href='/'" value="Back to Main"/>
@@ -109,15 +110,11 @@
             <table border="5">
                 <tr>
                     <th>Name</th>
-                    <td>Team ${team.name}</td>
+                    <td>${team.name} <#if team.p1.invalidate==true || team.p2.invalidate==true><img src="images/icon-flag.jpg" height="10" width="10" title="One or both players in team are invalidated"></#if></td>
                 </tr>
                <tr>
                     <th>Players</th>
-                    <td>
-                    <a href="playerStats?player_id=${team.p1.player_id}">${team.p1.name} <#if team.p1.invalidate==true><img src="images/icon-flag.jpg" height="10" width="10" title="Player Invalidated"></#if></a>
-                     &
-                     <a href="playerStats?player_id=${team.p2.player_id}">${team.p2.name}</a> <#if team.p2.invalidate==true><img src="images/icon-flag.jpg" height="10" width="10" title="Player Invalidated"></#if>
-                     </td>
+                    <td>${team.p1.getNameAsLink((season_id)!-1, (fromDate)!"NA", (toDate)!"NA")} & ${team.p2.getNameAsLink((season_id)!-1, (fromDate)!"NA", (toDate)!"NA")}</td>
                 </tr>
                 <tr>
                     <th>Joined</th>
@@ -160,13 +157,7 @@
                                  </thead>
                                  <tbody>
                                     </tr>
-                                         <td><a href="teamStats?team_id=${tStats.team.team_id}" title="${tStats.team.p1.name} & ${tStats.team.p2.name}">Team ${tStats.team.name}</a>
-                                         <font size="-1">
-                                         (<a href="playerStats?player_id=${tStats.team.p1.player_id}">${tStats.team.p1.name}</a><#if tStats.team.p1.invalidate==true><img src="images/icon-flag.jpg" height="10" width="10" title="Player Invalidated"></#if>
-                                          &
-                                          <a href="playerStats?player_id=${tStats.team.p2.player_id}">${tStats.team.p2.name}</a><#if tStats.team.p2.invalidate==true><img src="images/icon-flag.jpg" height="10" width="10" title="Player Invalidated"></#if>)
-                                         </font>
-                                         </td>
+                                         <td>${tStats.team.getNameAsLink((season_id)!-1, (fromDate)!"NA", (toDate)!"NA")}</td>
                                          <td>${tStats.played}</td>
                                          <td>${tStats.won}</td>
                                          <td>${tStats.lost}</td>
@@ -174,7 +165,7 @@
                                     </tr>
                                     <#list playerStats as pStats>
                                         <tr>
-                                        <td><a href="playerStats?player_id=${pStats.player.player_id}">${pStats.player.name}</a> <#if pStats.player.invalidate==true><img src="images/icon-flag.jpg" height="10" width="10" title="Player Invalidated"></#if></td>
+                                        <td>${pStats.player.getNameAsLink((season_id)!-1, (fromDate)!"NA", (toDate)!"NA")}</td>
                                         <td>${pStats.played}</td>
                                         <td>${pStats.won}</td>
                                         <td>${pStats.lost}</td>
@@ -224,45 +215,18 @@
                     </thead>
                     <tbody>
                    <#list games as game>
-                                           <tr>
-                                               <td><a href="updateMatch?id=${game.game_id}" title="Click to update match details">${game.game_id}</a>
-                                               </td>
-                                               <td>${game.getPlayedOn_IST()}</td>
-                                               <td>
-                                                   <#if game.t1?has_content>
-                                                       <a href="teamStats?team_id=${game.t1.team_id}" title="${game.t1.p1.name} & ${game.t1.p2.name}">Team ${game.t1.name}</a>
-                                                       <font size="-1">
-                                                       (<a href="playerStats?player_id=${game.t1.p1.player_id}">${game.t1.p1.name}</a><#if game.t1.p1.invalidate==true><img src="images/icon-flag.jpg" height="10" width="10" title="Player Invalidated"></#if>
-                                                        &
-                                                        <a href="playerStats?player_id=${game.t1.p2.player_id}">${game.t1.p2.name}</a><#if game.t1.p2.invalidate==true><img src="images/icon-flag.jpg" height="10" width="10" title="Player Invalidated"></#if>)
-                                                        </font>
-                                                   <#else>
-                                                       <a href="playerStats?player_id=${game.p1.player_id}">${game.p1.name}</a> <#if game.p1.invalidate==true><img src="images/icon-flag.jpg" height="10" width="10" title="Player Invalidated"></#if>
-                                                        &
-                                                        <a href="playerStats?player_id=${game.p2.player_id}">${game.p2.name}</a> <#if game.p2.invalidate==true><img src="images/icon-flag.jpg" height="10" width="10" title="Player Invalidated"></#if>
-                                                   </#if>
-                                               </td>
-                                               <td>${game.score1}</td>
-                                               <td>
-                                                   <#if game.t2?has_content>
-                                                       <a href="teamStats?team_id=${game.t2.team_id}" title="${game.t2.p1.name} & ${game.t2.p2.name}">Team ${game.t2.name}</a>
-                                                       <font size="-1">
-                                                       (<a href="playerStats?player_id=${game.t2.p1.player_id}">${game.t2.p1.name}</a><#if game.t2.p1.invalidate==true><img src="images/icon-flag.jpg" height="10" width="10" title="Player Invalidated"></#if>
-                                                        &
-                                                        <a href="playerStats?player_id=${game.t2.p2.player_id}">${game.t2.p2.name}</a><#if game.t2.p2.invalidate==true><img src="images/icon-flag.jpg" height="10" width="10" title="Player Invalidated"></#if>)
-                                                        </font>
-                                                   <#else>
-                                                       <a href="playerStats?player_id=${game.p3.player_id}">${game.p3.name}</a> <#if game.p3.invalidate==true><img src="images/icon-flag.jpg" height="10" width="10" title="Player Invalidated"></#if>
-                                                        &
-                                                        <a href="playerStats?player_id=${game.p4.player_id}">${game.p4.name}</a> <#if game.p4.invalidate==true><img src="images/icon-flag.jpg" height="10" width="10" title="Player Invalidated"></#if>
-                                                   </#if>
-                                               </td>
-                                               <td>${game.score2}</td>
-                                               <td>${game.getResult(team)}</td>
-                                               </td>
-                                           </tr>
+                         <tr>
+                            <td>${game.getGame_idAsLinktoUpdateMatch()}</td>
+                            <td>${game.getPlayedOn_IST()}</td>
+                            <td>${game.getTeam1_or_playersAsLink((season_id)!-1, (fromDate)!"NA", (toDate)!"NA")}</td>
+                            <td>${game.score1}</td>
+                            <td>${game.getTeam2_or_playersAsLink((season_id)!-1, (fromDate)!"NA", (toDate)!"NA")}</td>
+                            <td>${game.score2}</td>
+                            <td>${game.getResult(team)}</td>
+                          </tr>
                       </#list>
                       </tbody>
                 </table>
+    </#noautoesc>
     </body>
 </html>

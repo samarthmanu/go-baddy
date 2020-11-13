@@ -18,8 +18,14 @@ public interface GameV2Repository extends CrudRepository<GameV2, Long> {
     @Query("SELECT g FROM GameV2 g WHERE  invalidate IS FALSE")
     List<GameV2> findAllValid();
 
+    @Query("SELECT g FROM GameV2 g, Season s WHERE s=:season AND g.played_on BETWEEN s.effective_from AND s.effective_to")
+    List<GameV2> findAllBySeason(@Param("season") Season season);
+
     @Query("SELECT g FROM GameV2 g, Season s WHERE s=:season AND g.invalidate IS FALSE AND g.played_on BETWEEN s.effective_from AND s.effective_to")
     List<GameV2> findAllValidBySeason(@Param("season") Season season);
+
+    @Query("SELECT g FROM GameV2 g WHERE g.played_at BETWEEN :fromDate  AND :toDate")
+    List<GameV2> findAllByDateRange(@Param("fromDate") Timestamp fromDate, @Param("toDate") Timestamp toDate);
 
     //@Query("SELECT g FROM GameV2 g WHERE g.invalidate IS FALSE AND (g.played_at>=:fromDate  AND g.played_at<=:toDate)")
     @Query("SELECT g FROM GameV2 g WHERE g.invalidate IS FALSE AND g.played_at BETWEEN :fromDate  AND :toDate")

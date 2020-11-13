@@ -45,6 +45,10 @@ public class TeamStats {
         return CommonUtil.calcWinPercentage(played, won);
     }
 
+    public double calcRatio(int x, int y) {
+        return CommonUtil.calcRatio(x, y);
+    }
+
     public int getLost() {
         return lost;
     }

@@ -56,13 +56,13 @@ public class LeaderboardController {
         Season season = null;
         if (season_id == null) {
             season = seasons.get(seasons.size() - 1);
-            allGames = gameV2Service.findAllValidBySeason(season);
+            allGames = gameV2Service.findAllBySeason(season);
             model.addAttribute("season_id", season.getSeason_id());
         } else if (season_id == -1) {
-            allGames = gameV2Service.findAllValid();  //all-time
+            allGames = gameV2Service.findAll();  //all-time
             model.addAttribute("season_id", -1);
         } else if (season_id == 0) {
-            allGames = gameV2Service.findAllValidByDateRange(
+            allGames = gameV2Service.findAllByDateRange(
                     CommonUtil.stringToTimeStamp(fromDate + " 00:00:01"),
                     CommonUtil.stringToTimeStamp(toDate + " 23:59:59"));  //custom range
             model.addAttribute("fromDate", fromDate);
@@ -70,18 +70,18 @@ public class LeaderboardController {
             model.addAttribute("season_id", 0);
         } else {
             season = seasonService.findById(season_id).get();
-            allGames = gameV2Service.findAllValidBySeason(season); //season wise
+            allGames = gameV2Service.findAllBySeason(season); //season wise
             model.addAttribute("season_id", season.getSeason_id());
         }
 
         //player leaderboard
         {
-            List<Player> players = playerService.findAllValid();
+            List<Player> players = playerService.findAll().stream().filter(player -> !player.isInvalidate()).collect(Collectors.toList());
             List playerStats = new ArrayList<PlayerStats>();
             for (Player player : players) {
 
                 List<GameV2> playerGames = allGames.stream().filter(gameV2 ->
-                        gameV2.getPlayers().contains(player)).collect(Collectors.toList());//gameV2Service.getGamesPlayedByPlayer(player);//gameV2Service.getGamesPlayedByPlayer(player);
+                        gameV2.getPlayers().contains(player) && !gameV2.isInvalidate()).collect(Collectors.toList());//gameV2Service.getGamesPlayedByPlayer(player);//gameV2Service.getGamesPlayedByPlayer(player);
 
                 /*if(playerGames.size()==0 || player.isInvalidate()){
                     continue; //skip if invalidated player / no games played
@@ -113,7 +113,7 @@ public class LeaderboardController {
             for (Team team : teams) {
 
                 List<GameV2> team_games = allGames.stream().filter(gameV2 ->
-                        gameV2.getTeams().contains(team)).collect(Collectors.toList());//gameV2Service.getGamesPlayedByTeam(team);
+                        gameV2.getTeams().contains(team) && !gameV2.isInvalidate()).collect(Collectors.toList());//gameV2Service.getGamesPlayedByTeam(team);
 
                 /*if(team_games.size()==0){
                     continue; //skip if no games played

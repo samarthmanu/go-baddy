@@ -200,7 +200,6 @@ function validateScoreForm(){
                             <input type="text" id="game_id" name="game_id" value="${game.game_id}" readonly="readonly" style="background-color: lightgrey;">
                             <input type="checkbox" id="invalidate" name="invalidate" hidden="true" <#if game.invalidate==true>checked</#if>>
                             <br><br>
-                            <p style="color:red"><#if game.invalidate==true>This match is currently marked as INVALID</#if></p>
                             <input type="submit" value="<#if game.invalidate==true>Mark match as VALID<#else>Mark match as INVALID</#if>">
                          </form><br><br>
                        </td>

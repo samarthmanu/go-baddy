@@ -14,11 +14,6 @@ public class PlayerService implements IPlayerService {
     @Autowired
     private PlayerRepository repository;
 
-    @Override
-    public List<Player> findAllValid() {
-
-        return repository.findAllValid();
-    }
 
     @Override
     public List<Player> findAll() {
@@ -44,7 +39,14 @@ public class PlayerService implements IPlayerService {
         return repository.save(player);
     }
 
-    /*@Override
+    /*
+    @Override
+    public List<Player> findAllValid() {
+
+        return repository.findAllValid();
+    }
+
+    @Override
     public Integer getTeamChangeCountByPlayer(Player player) {
         return repository.getTeamChangeCountByPlayer(player);
     }

@@ -72,8 +72,14 @@ public class GameV2 {
     public Long getGame_id() {
         return game_id;
     }
+
     public String getGame_idAsLinktoMatchHist(Long season_id) {
         return MessageFormat.format("<a href=\"matchHist?season_id={0}\" title=\"Click to goto match history page\">#{1}</a>", season_id,game_id);
+    }
+
+    public String getGame_idAsLinktoUpdateMatch() {
+        String invalidateImg = invalidate?"<img src=\"images/icon-flag.jpg\" height=10 width=10 title=\"Match Invalidated\">" : " ";
+        return MessageFormat.format("<a href=\"updateMatch?id={0}\" title=\"Click to update match details\">{0}</a>{1}", game_id, invalidateImg);
     }
 
     public void setGame_id(Long game_id) {
@@ -118,6 +124,54 @@ public class GameV2 {
 
     public void setPlayed_on(Date played_on) {
         this.played_on = played_on;
+    }
+
+    public String getTeam1_or_playersAsLink(){
+        if(t1==null){
+            return p1.getNameAsLink() + " & " + p2.getNameAsLink();
+        }else{
+            return  t1.getNameAsLink();
+        }
+    }
+
+    public String getTeam1_or_playersAsLink(long season_id, String fromDate, String toDate){
+        if(t1==null){
+            return p1.getNameAsLink(season_id, fromDate, toDate) + " & " + p2.getNameAsLink(season_id, fromDate, toDate);
+        }else{
+            return  t1.getNameAsLink(season_id, fromDate, toDate);
+        }
+    }
+
+    public String getTeam2_or_playersAsLink(){
+        if(t2==null){
+            return p3.getNameAsLink() + " & " + p4.getNameAsLink();
+        }else{
+            return  t2.getNameAsLink();
+        }
+    }
+
+    public String getTeam2_or_playersAsLink(long season_id, String fromDate, String toDate){
+        if(t2==null){
+            return p3.getNameAsLink(season_id, fromDate, toDate) + " & " + p4.getNameAsLink(season_id, fromDate, toDate);
+        }else{
+            return  t2.getNameAsLink(season_id, fromDate, toDate);
+        }
+    }
+
+    public String getWinningTeamOrPlayersAsLink(){
+        if(score1>score2){
+            return "WINNERS: " + getTeam1_or_playersAsLink();
+        }else{
+            return "WINNERS: " + getTeam2_or_playersAsLink();
+        }
+    }
+
+    public String getWinningTeamOrPlayersAsLink(long season_id, String fromDate, String toDate){
+        if(score1>score2){
+            return "WINNERS: " + getTeam1_or_playersAsLink(season_id, fromDate, toDate);
+        }else{
+            return "WINNERS: " + getTeam2_or_playersAsLink(season_id, fromDate, toDate);
+        }
     }
 
     /*public String getTeam1(){
@@ -180,6 +234,14 @@ public class GameV2 {
         return score1+score2;
     }
 
+    public int getWinningScore(){
+        return Math.max(score1,score2);
+    }
+
+    public int getLosingScore(){
+        return Math.min(score1,score2);
+    }
+
   /*  public String getTeam2(){
         if (t2!=null) {
             return t2.getName();
@@ -196,31 +258,31 @@ public class GameV2 {
         }
     }
 
-    public String getWinningResultWithScore(){
+    public String getWinningResultWithScore(String seasonFilter){
         if (score1 > score2){
-            return (t1 != null? t1.getNameAsLink() :
-                        p1.getNameAsLink() + " & " + p2.getNameAsLink()) + " [" + score1 + " pts] won against "
-                    + (t2 != null? t2.getNameAsLink() :
-                        p3.getNameAsLink() + " & " + p4.getNameAsLink()) + " [" + score2 + " pts]";
+            return (t1 != null? t1.getNameAsLink(seasonFilter) :
+                        p1.getNameAsLink(seasonFilter) + " & " + p2.getNameAsLink(seasonFilter)) + " [" + score1 + " pts] won against "
+                    + (t2 != null? t2.getNameAsLink(seasonFilter) :
+                        p3.getNameAsLink(seasonFilter) + " & " + p4.getNameAsLink(seasonFilter)) + " [" + score2 + " pts]";
         }else{
-            return (t2 != null? t2.getNameAsLink() :
-                    p3.getNameAsLink() + " & " + p4.getNameAsLink()) + " [" + score2 + " pts] won against "
+            return (t2 != null? t2.getNameAsLink(seasonFilter) :
+                    p3.getNameAsLink(seasonFilter) + " & " + p4.getNameAsLink(seasonFilter)) + " [" + score2 + " pts] won against "
                     + (t1 != null? t1.getNameAsLink() :
-                    p1.getNameAsLink() + " & " + p2.getNameAsLink()) + " [" + score1 + " pts]";
+                    p1.getNameAsLink(seasonFilter) + " & " + p2.getNameAsLink(seasonFilter)) + " [" + score1 + " pts]";
         }
     }
 
-    public String getLosingResultWithScore(){
+    public String getLosingResultWithScore(String seasonFilter){
         if (score1 < score2){
-            return (t1 != null? t1.getNameAsLink() :
-                    p1.getNameAsLink() + " & " + p2.getNameAsLink()) + " [" + score1 + " pts] lost to "
-                    + (t2 != null? t2.getNameAsLink() :
-                    p3.getNameAsLink() + " & " + p4.getNameAsLink()) + " [" + score2 + " pts]";
+            return (t1 != null? t1.getNameAsLink(seasonFilter) :
+                    p1.getNameAsLink(seasonFilter) + " & " + p2.getNameAsLink(seasonFilter)) + " [" + score1 + " pts] lost to "
+                    + (t2 != null? t2.getNameAsLink(seasonFilter) :
+                    p3.getNameAsLink(seasonFilter) + " & " + p4.getNameAsLink(seasonFilter)) + " [" + score2 + " pts]";
         }else{
-            return (t2 != null? t2.getNameAsLink() :
-                    p3.getNameAsLink() + " & " + p4.getNameAsLink()) + " [" + score2 + " pts] lost to "
-                    + (t1 != null? t1.getNameAsLink() :
-                    p1.getNameAsLink() + " & " + p2.getNameAsLink()) + " [" + score1 + " pts]";
+            return (t2 != null? t2.getNameAsLink(seasonFilter) :
+                    p3.getNameAsLink(seasonFilter) + " & " + p4.getNameAsLink(seasonFilter)) + " [" + score2 + " pts] lost to "
+                    + (t1 != null? t1.getNameAsLink(seasonFilter) :
+                    p1.getNameAsLink(seasonFilter) + " & " + p2.getNameAsLink(seasonFilter)) + " [" + score1 + " pts]";
         }
     }
 

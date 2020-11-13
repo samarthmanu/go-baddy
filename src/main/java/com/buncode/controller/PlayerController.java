@@ -20,7 +20,7 @@ import java.text.ParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.buncode.util.Constants.NO_DATA;
+import static com.buncode.util.Constants.NO_DATA_HTML;
 
 @Controller
 public class PlayerController {
@@ -46,7 +46,9 @@ public class PlayerController {
         model.addAttribute("players", players);
 
         if (players.size() == 0) {
-            return "Looks like no players configured";
+            return "<input type=\"button\" value=\"Back\" onclick=\"location.href = document.referrer; return false;\"/>\n" +
+                    "<input type=\"button\" onclick=\"location.href='/'\" value=\"Back to Main\"/>" +
+                    "Looks like no players configured";
         }
 
         //player info
@@ -74,7 +76,9 @@ public class PlayerController {
         model.addAttribute("seasons", seasons);
 
         if (players.size() == 0) {
-            return "Looks like no players configured";
+            return "<input type=\"button\" value=\"Back\" onclick=\"location.href = document.referrer; return false;\"/>\n" +
+                    "<input type=\"button\" onclick=\"location.href='/'\" value=\"Back to Main\"/>" +
+                    "Looks like no players configured";
         }
 
         //player info
@@ -85,13 +89,13 @@ public class PlayerController {
         Season season = null;
         if(season_id==null) {
             season = seasons.get(seasons.size()-1) ;
-            allGames = gameV2Service.findAllValidBySeason(season);
+            allGames = gameV2Service.findAllBySeason(season);
             model.addAttribute("season_id", season.getSeason_id());
         }else if(season_id==-1) {
-            allGames = gameV2Service.findAllValid();  //all-time
+            allGames = gameV2Service.findAll();  //all-time
             model.addAttribute("season_id", -1);
         }else if (season_id==0){
-            allGames = gameV2Service.findAllValidByDateRange(
+            allGames = gameV2Service.findAllByDateRange(
                     CommonUtil.stringToTimeStamp(fromDate + " 00:00:01"),
                     CommonUtil.stringToTimeStamp(toDate + " 23:59:59"));  //custom range
             model.addAttribute("fromDate", fromDate);
@@ -99,13 +103,14 @@ public class PlayerController {
             model.addAttribute("season_id", 0);
         }else{
             season = seasonService.findById(season_id).get();
-            allGames = gameV2Service.findAllValidBySeason(season); //season wise
+            allGames = gameV2Service.findAllBySeason(season); //season wise
             model.addAttribute("season_id", season.getSeason_id());
         }
 
         //matches history
         List<GameV2> playerGames = allGames.stream().filter(gameV2 ->
-                gameV2.getPlayers().contains(player)).collect(Collectors.toList());//gameV2Service.getGamesPlayedByPlayer(player);//gameV2Service.getGamesPlayedByPlayer(player);
+                gameV2.getPlayers().contains(player) && !gameV2.isInvalidate()).collect(Collectors.toList());//gameV2Service.getGamesPlayedByPlayer(player);//gameV2Service.getGamesPlayedByPlayer(player);
+
         model.addAttribute("games", playerGames);//playerGames.stream().limit(25).collect(Collectors.toList()));
 
             //player stats + fantasy stats
@@ -127,8 +132,8 @@ public class PlayerController {
 
             pStats.setCurrentStreak(index + lastResult.substring(0, 1).toUpperCase());  //should be like 2W or 3L);
         }else{
-            pStats.setRecentForm(NO_DATA);
-            pStats.setCurrentStreak(NO_DATA);
+            pStats.setRecentForm(NO_DATA_HTML);
+            pStats.setCurrentStreak(NO_DATA_HTML);
         }
 
             model.addAttribute("pStats", pStats);
@@ -185,7 +190,10 @@ public class PlayerController {
             playerService.save(player);
 
             playerService.findAll(); //refresh players cache
-            String result = MessageFormat.format("<h2>Player [{0}] created successfully</h2>", player.getName());
+            String result = MessageFormat.format(
+                    "<input type=\"button\" value=\"Back\" onclick=\"location.href = document.referrer; return false;\"/>\n" +
+                            "<input type=\"button\" onclick=\"location.href='/'\" value=\"Back to Main\"/>" +
+                    "<h2>Player [{0}] created successfully</h2>", player.getName());
             return result;
         }
 
@@ -217,7 +225,10 @@ public class PlayerController {
                 playerService.save(player);
             }
             playerService.findAll(); //refresh players cache
-            return MessageFormat.format("<h2>Player [{0}] updated successfully</h2>", player.getName());
+            return MessageFormat.format(
+                    "<input type=\"button\" value=\"Back\" onclick=\"location.href = document.referrer; return false;\"/>\n" +
+                            "<input type=\"button\" onclick=\"location.href='/'\" value=\"Back to Main\"/>" +
+                            "<h2>Player [{0}] updated successfully</h2>" , player.getName());
         }
 
     @PostMapping("/invalidatePlayer")
@@ -235,7 +246,9 @@ public class PlayerController {
         }
 
         playerService.findAll(); //refresh players cache
-        return(MessageFormat.format("<h2>Player [{0}] validity updated from [{1}] to [{2}] successfully</h2>", player.getName(), !invalidate, !newInvalidate));
+        return(MessageFormat.format("<input type=\"button\" value=\"Back\" onclick=\"location.href = document.referrer; return false;\"/>\n" +
+                "<input type=\"button\" onclick=\"location.href='/'\" value=\"Back to Main\"/>" +
+                "<h2>Player [{0}] validity updated from [{1}] to [{2}] successfully</h2>", player.getName(), !invalidate, !newInvalidate));
     }
 
         public PlayerStats calculatePlayerStats(Player player, List<GameV2> playerGames, boolean calcFstats){
@@ -246,9 +259,6 @@ public class PlayerController {
 
             start=System.currentTimeMillis();
             //fetch counts
-            /*List<GameV2> playerGames = gameV2Service.findAll().stream().filter(gameV2 ->
-                    gameV2.getPlayers().contains(player.getPlayer_id())).collect(Collectors.toList());//gameV2Service.getGamesPlayedByPlayer(player);*/
-
             Map<String, Long> teamChangeMap = playerGames
                     .stream().collect(Collectors.groupingBy(g->g.getPlayed_on().toString() + "_playedWith_" + g.getPartner(player), Collectors.counting()));
 
@@ -259,13 +269,10 @@ public class PlayerController {
                     .collect(Collectors.toList()).size();//gameV2Service.getMatchdayCountByPlayer(player);
 
             int played_count = playerGames.size();//gameV2Service.getGamesPlayedCountByPlayer(player);
-
             int won_count = playerGames.stream().filter(game -> game.getResult(player).equals("WON")).collect(Collectors.toList()).size();//gameV2Service.getGamesWonCountByPlayer(player);
-
             int lost_count = (played_count - won_count);
-
             int deuce_count = playerGames.stream().filter(game -> game.getScore1()+game.getScore2()>40).collect(Collectors.toList()).size();//gameV2Service.getDeuceGamesCountByPlayer(player);
-
+            int big_win_count = playerGames.stream().filter(game -> game.getResult(player).equals("WON") && (game.getWinningScore()-game.getLosingScore()>=10)).collect(Collectors.toList()).size();
             int teamchange_count = teamChangeMap.size();//playerService.getTeamChangeCountByPlayer(player);
 
             end = System.currentTimeMillis();
@@ -319,6 +326,15 @@ public class PlayerController {
             }
             */
 
+            //for big wins (win by >= 10 points)
+            {
+                PointsConfig pts_config = pointsConfigService.findById(Constants.POINTS_RULE_ID_FOR_BIGWIN_GAMES).get();
+                int pts_total = big_win_count * pts_config.getMultiplier();
+                FantasyStat fStat = new FantasyStat(pts_config.getRule(), big_win_count, pts_config.getMultiplier(), pts_total);
+                fMap.put("big_win_pts", fStat);
+                fTotal += pts_total;
+            }
+
             //for deuce games
             {
                 PointsConfig pts_config = pointsConfigService.findById(Constants.POINTS_RULE_ID_FOR_DEUCE_GAMES).get();
@@ -328,7 +344,7 @@ public class PlayerController {
                 fTotal += pts_total;
             }
 
-            //for every team change in a a match day
+            //for every team change in a match day
             {
                 PointsConfig pts_config = pointsConfigService.findById(Constants.POINTS_RULE_ID_FOR_TEAMS_CHANGED).get();
                 int pts_total = teamchange_count * pts_config.getMultiplier();
@@ -339,8 +355,6 @@ public class PlayerController {
 
             //store last item as total points
             {
-                Map points_map = new HashMap<String, Integer>();
-                points_map.put("total", fTotal);
                 FantasyStat fStat = new FantasyStat("", 0, 0, fTotal);
                 fMap.put("total_pts", fStat);
             }

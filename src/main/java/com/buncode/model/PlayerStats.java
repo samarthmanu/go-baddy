@@ -75,6 +75,10 @@ public class PlayerStats{
         return CommonUtil.calcWinPercentage(played, won);
     }
 
+    public double calcRatio(int x, int y) {
+        return CommonUtil.calcRatio(x, y);
+    }
+
     public PlayerStats(Player player, int played, int won, int lost) {
         this.player = player;
         this.played = played;

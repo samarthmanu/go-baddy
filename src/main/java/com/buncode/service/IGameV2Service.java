@@ -14,28 +14,31 @@ public interface IGameV2Service {
 
     @Transactional(readOnly = true)
     @Cacheable(cacheNames = "games_cache")
+    Optional<GameV2> findById(Long game_id);
+
+    @Transactional(readOnly = true)
+    @Cacheable(cacheNames = "games_cache")
     List<GameV2> findAll();
 
-    /*@Cacheable(cacheNames = "games_cache")
+    @Transactional(readOnly = true)
+    @Cacheable(cacheNames = "games_cache")
     List<GameV2> findAllBySeason(Season season);
 
-    @Cacheable(cacheNames = "games_cache")
-    List<GameV2> findAllByDateRange(Timestamp fromDate, Timestamp toDate) throws ParseException;*/
+    @Transactional(readOnly = true)
+    List<GameV2> findAllByDateRange(Timestamp fromDate, Timestamp toDate) throws ParseException;
 
+    /*@Transactional(readOnly = true)
     @Cacheable(cacheNames = "games_cache")
     List<GameV2> findAllValid();
 
+    @Transactional(readOnly = true)
     @Cacheable(cacheNames = "games_cache")
     List<GameV2> findAllValidBySeason(Season season);
 
-    //@Cacheable(cacheNames = "games_cache")
+    @Transactional(readOnly = true)
+    @Cacheable(cacheNames = "games_cache")
     List<GameV2> findAllValidByDateRange(Timestamp fromDate, Timestamp toDate) throws ParseException;
 
-    //@Cacheable(cacheNames = "games_cache")
-    @Transactional(readOnly = true)
-    Optional<GameV2> findById(Long game_id);
-
-    /*
     //@Cacheable(value = "games_cache", key = "#player.getCacheKey('_played')")
     //@Cacheable(cacheNames = "games_cache")
     @Transactional(readOnly = true)

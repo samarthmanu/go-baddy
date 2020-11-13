@@ -75,6 +75,7 @@
                 }
     </style>
     <body>
+        <#noautoesc>
         <button onClick="window.location.reload();">Refresh</button>
         <input type="button" onclick="location.href='/'" value="Back to Main"/>
                  <h2>Filter By</h2>
@@ -94,7 +95,6 @@
                                                         </div>
                                                </form>
         <h2>Records</h2>
-                <#noautoesc>
                 <table border="5">
                     <tr>
                         <th colspan=2>Hall of Fame</th>
@@ -115,6 +115,6 @@
                         </tr>
                     </#list>
                 </table>
-               </#noautoesc>
+    </#noautoesc>
     </body>
 </html>

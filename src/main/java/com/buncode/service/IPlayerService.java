@@ -16,8 +16,8 @@ public interface IPlayerService {
     @Cacheable(cacheNames = "players_cache")
     Optional<Player> findById(long player_id);
 
-    @Cacheable(cacheNames = "players_cache")
-    List<Player> findAllValid();
+    /*@Cacheable(cacheNames = "players_cache")
+    List<Player> findAllValid();*/
 
     @Cacheable(cacheNames = "players_cache")
     Player getPlayerByName(String name);

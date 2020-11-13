@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.text.MessageFormat;
 import java.text.ParseException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -95,13 +96,13 @@ public class RecordsController {
         Season season = null;
         if (season_id == null) {
             season = seasons.get(seasons.size() - 1);
-            allGames = gameV2Service.findAllValidBySeason(season);
+            allGames = gameV2Service.findAllBySeason(season);
             model.addAttribute("season_id", season.getSeason_id());
         } else if (season_id == -1) {
-            allGames = gameV2Service.findAllValid();  //all-time
+            allGames = gameV2Service.findAll();  //all-time
             model.addAttribute("season_id", -1);
         } else if (season_id == 0) {
-            allGames = gameV2Service.findAllValidByDateRange(
+            allGames = gameV2Service.findAllByDateRange(
                     CommonUtil.stringToTimeStamp(fromDate + " 00:00:01"),
                     CommonUtil.stringToTimeStamp(toDate + " 23:59:59"));  //custom range
             model.addAttribute("fromDate", fromDate);
@@ -109,9 +110,16 @@ public class RecordsController {
             model.addAttribute("season_id", 0);
         } else {
             season = seasonService.findById(season_id).get();
-            allGames = gameV2Service.findAllValidBySeason(season); //season wise
+            allGames = gameV2Service.findAllBySeason(season); //season wise
             model.addAttribute("season_id", season.getSeason_id());
         }
+
+        //set season filter for navigation from records page
+        String filter= MessageFormat.format("&season_id={0}", season_id);
+        if(season_id==0 && fromDate!=null && toDate!=null) {
+            filter=filter.concat(MessageFormat.format("&fromDate={0}&toDate={1}", fromDate, toDate));
+        }
+        final String seasonFilter = filter;
 
         List<RecordStat> fameList = new ArrayList<>();
         List<RecordStat> shameList = new ArrayList<>();
@@ -141,6 +149,9 @@ public class RecordsController {
 
         Integer highestScore = -1;
         List<GameV2> highestScore_games = new ArrayList<>();
+
+        // filter only valid games
+        allGames = allGames.stream().filter(gameV2 -> !gameV2.isInvalidate()).collect(Collectors.toList());
 
         for (GameV2 game : allGames) {
 
@@ -299,7 +310,7 @@ public class RecordsController {
             if(highestScore>0) {
 
                 biggestTotalDesc = highestScore_games.stream().
-                        map(game -> game.getScoreSum() + " pts --> " + game.getGame_idAsLinktoMatchHist(season_id) + ": " + game.getWinningResultWithScore()).
+                        map(game -> game.getScoreSum() + " pts --> " + game.getGame_idAsLinktoMatchHist(season_id) + ": " + game.getWinningResultWithScore(seasonFilter)).
                         collect(Collectors.joining("<br>"));
             }
             fameList.add(new RecordStat("Highest total pts (Match)", biggestTotalDesc));
@@ -312,10 +323,10 @@ public class RecordsController {
             String biggestLossDesc = NO_DATA_HTML;
             if(biggestVictory>0) {
                 biggestWinDesc = biggestVictory_games.stream().
-                        map(game -> game.getScoreDiff() + " pts --> " + game.getGame_idAsLinktoMatchHist(season_id) + ": " + game.getWinningResultWithScore()).
+                        map(game -> game.getScoreDiff() + " pts --> " + game.getGame_idAsLinktoMatchHist(season_id) + ": " + game.getWinningResultWithScore(seasonFilter)).
                         collect(Collectors.joining("<br>"));
                 biggestLossDesc = biggestVictory_games.stream().
-                        map(game -> game.getScoreDiff() + " pts --> " + game.getGame_idAsLinktoMatchHist(season_id) + ": " + game.getLosingResultWithScore()).
+                        map(game -> game.getScoreDiff() + " pts --> " + game.getGame_idAsLinktoMatchHist(season_id) + ": " + game.getLosingResultWithScore(seasonFilter)).
                         collect(Collectors.joining("<br>"));
             }
             fameList.add(new RecordStat("Biggest Win (Match)", biggestWinDesc));
@@ -339,7 +350,7 @@ public class RecordsController {
                         .collect(Collectors.toList());
 
                 playerMostAttendanceDesc = playersMostAttendance.stream().
-                        map(player -> maxAttendance + " match days --> " + player.getNameAsLink())
+                        map(player -> maxAttendance + " match days --> " + player.getNameAsLink(seasonFilter))
                         .collect(Collectors.joining("<br>"));
             }
             fameList.add(new RecordStat("Most attendance (Player)", playerMostAttendanceDesc));
@@ -362,7 +373,7 @@ public class RecordsController {
                         .collect(Collectors.toList());
 
                 teamMostAttendanceDesc = teamsMostAttendance.stream().
-                        map(team -> maxAttendance + " match days --> " + team.getNameAsLink())
+                        map(team -> maxAttendance + " match days --> " + team.getNameAsLink(seasonFilter))
                         .collect(Collectors.joining("<br>"));
             }
             fameList.add(new RecordStat("Most attendance (Team)", teamMostAttendanceDesc));
@@ -381,7 +392,7 @@ public class RecordsController {
                         .collect(Collectors.toList());
 
                 playerMostPlayedDesc = playersMostPlayed.stream().
-                        map(player -> maxPlayed + " games --> " + player.getNameAsLink())
+                        map(player -> maxPlayed + " games --> " + player.getNameAsLink(seasonFilter))
                         .collect(Collectors.joining("<br>"));
             }
             fameList.add(new RecordStat("Most games played (Player)", playerMostPlayedDesc));
@@ -400,7 +411,7 @@ public class RecordsController {
                         .collect(Collectors.toList());
 
                 teamMostPlayedDesc = teamsMostPlayed.stream().
-                        map(team -> maxPlayed + " games --> " + team.getNameAsLink())
+                        map(team -> maxPlayed + " games --> " + team.getNameAsLink(seasonFilter))
                         .collect(Collectors.joining("<br>"));
             }
             fameList.add(new RecordStat("Most games played (Team)", teamMostPlayedDesc));
@@ -419,7 +430,7 @@ public class RecordsController {
                         .collect(Collectors.toList());
 
                 playerMostWonDesc = playersMostWon.stream().
-                        map(player -> maxWon + " games --> " + player.getNameAsLink())
+                        map(player -> maxWon + " games --> " + player.getNameAsLink(seasonFilter))
                         .collect(Collectors.joining("<br>"));
             }
             fameList.add(new RecordStat("Most games won (Player)", playerMostWonDesc));
@@ -438,7 +449,7 @@ public class RecordsController {
                         .collect(Collectors.toList());
 
                 teamMostWonDesc = teamsMostWon.stream().
-                        map(team -> maxWon + " games --> " + team.getNameAsLink())
+                        map(team -> maxWon + " games --> " + team.getNameAsLink(seasonFilter))
                         .collect(Collectors.joining("<br>"));
             }
             fameList.add(new RecordStat("Most games won (Team)", teamMostWonDesc));
@@ -457,7 +468,7 @@ public class RecordsController {
                         .collect(Collectors.toList());
 
                 playerMostDeuceDesc = playersMostDeuce.stream().
-                        map(player -> maxDeuce + " games --> " + player.getNameAsLink())
+                        map(player -> maxDeuce + " games --> " + player.getNameAsLink(seasonFilter))
                         .collect(Collectors.joining("<br>"));
             }
             fameList.add(new RecordStat("Most deuce games (Player)", playerMostDeuceDesc));
@@ -476,7 +487,7 @@ public class RecordsController {
                         .collect(Collectors.toList());
 
                 teamMostDeuceDesc = teamsMostDeuce.stream().
-                        map(team -> maxDeuce + " games --> " + team.getNameAsLink())
+                        map(team -> maxDeuce + " games --> " + team.getNameAsLink(seasonFilter))
                         .collect(Collectors.joining("<br>"));
             }
             fameList.add(new RecordStat("Most deuce games (Team)", teamMostDeuceDesc));
@@ -495,7 +506,7 @@ public class RecordsController {
                         .collect(Collectors.toList());
 
                 playerMostDeuceWonDesc = playersMostDeuceWon.stream().
-                        map(player -> maxDeuceWon + " games --> " + player.getNameAsLink())
+                        map(player -> maxDeuceWon + " games --> " + player.getNameAsLink(seasonFilter))
                         .collect(Collectors.joining("<br>"));
             }
             fameList.add(new RecordStat("Most deuce games won (Player)", playerMostDeuceWonDesc));
@@ -514,7 +525,7 @@ public class RecordsController {
                         .collect(Collectors.toList());
 
                 teamMostDeuceWonDesc = teamsMostDeuceWon.stream().
-                        map(team -> maxDeuceWon + " games --> " + team.getNameAsLink())
+                        map(team -> maxDeuceWon + " games --> " + team.getNameAsLink(seasonFilter))
                         .collect(Collectors.joining("<br>"));
             }
             fameList.add(new RecordStat("Most deuce games won (Team)", teamMostDeuceWonDesc));
@@ -550,7 +561,7 @@ public class RecordsController {
                             GameV2 startStreak = gameStreak.getGameList().get(StreakCnt-1);
                             GameV2 endStreak = gameStreak.getGameList().get(0);
 
-                            return gameStreak.getGameList().size() + " games --> " + gameStreak.player.getNameAsLink() + ": "
+                            return gameStreak.getGameList().size() + " games --> " + gameStreak.player.getNameAsLink(seasonFilter) + ": "
                                     + startStreak.getGame_idAsLinktoMatchHist(season_id) + " (" + startStreak.getPlayedOn_IST() + ") to "
                                     + endStreak.getGame_idAsLinktoMatchHist(season_id) + " (" + endStreak.getPlayedOn_IST() + ")";
                         })
@@ -589,7 +600,7 @@ public class RecordsController {
                             GameV2 startStreak = gameStreak.getGameList().get(StreakCnt-1);
                             GameV2 endStreak = gameStreak.getGameList().get(0);
 
-                            return gameStreak.getGameList().size() + " games --> " + gameStreak.team.getNameAsLink() + ": "
+                            return gameStreak.getGameList().size() + " games --> " + gameStreak.team.getNameAsLink(seasonFilter) + ": "
                                     + startStreak.getGame_idAsLinktoMatchHist(season_id) + " (" + startStreak.getPlayedOn_IST() + ") to "
                                     + endStreak.getGame_idAsLinktoMatchHist(season_id) + " (" + endStreak.getPlayedOn_IST() + ")";
                         })
@@ -617,7 +628,7 @@ public class RecordsController {
                         .collect(Collectors.toList());
 
                 playerLeastAttendanceDesc = playersLeastAttendance.stream().
-                        map(player -> minAttendance + " match days --> " + player.getNameAsLink())
+                        map(player -> minAttendance + " match days --> " + player.getNameAsLink(seasonFilter))
                         .collect(Collectors.joining("<br>"));
             }
             shameList.add(new RecordStat("Least attendance (Player)", playerLeastAttendanceDesc));
@@ -640,7 +651,7 @@ public class RecordsController {
                         .collect(Collectors.toList());
 
                 teamLeastAttendanceDesc = teamsLeastAttendance.stream().
-                        map(team -> minAttendance + " match days --> " + team.getNameAsLink())
+                        map(team -> minAttendance + " match days --> " + team.getNameAsLink(seasonFilter))
                         .collect(Collectors.joining("<br>"));
             }
             shameList.add(new RecordStat("Least attendance (Team)", teamLeastAttendanceDesc));
@@ -659,7 +670,7 @@ public class RecordsController {
                         .collect(Collectors.toList());
 
                 playerMostLostDesc = playersMostLost.stream().
-                        map(player -> maxLost + " games --> " + player.getNameAsLink())
+                        map(player -> maxLost + " games --> " + player.getNameAsLink(seasonFilter))
                         .collect(Collectors.joining("<br>"));
             }
             shameList.add(new RecordStat("Most games lost (Player)", playerMostLostDesc));
@@ -678,7 +689,7 @@ public class RecordsController {
                         .collect(Collectors.toList());
 
                 teamMostLostDesc = teamsMostLost.stream().
-                        map(team -> maxLost + " games --> " + team.getNameAsLink())
+                        map(team -> maxLost + " games --> " + team.getNameAsLink(seasonFilter))
                         .collect(Collectors.joining("<br>"));
             }
             shameList.add(new RecordStat("Most games lost (Team)", teamMostLostDesc));
@@ -687,17 +698,17 @@ public class RecordsController {
         //most deuces lost - player
         {
             String playerMostDeuceLostDesc = NO_DATA_HTML;
-            if(deuceCount_players.size()>0) {
-                Integer maxDeuceLost = deuceCount_players.get(
+            if(deuceCountLost_players.size()>0) {
+                Integer maxDeuceLost = deuceCountLost_players.get(
                         deuceCount_players.entrySet().stream().max(Map.Entry.comparingByValue()).get().getKey());
 
-                List<Player> playersMostDeuceLost = deuceCount_players.entrySet().stream()
+                List<Player> playersMostDeuceLost = deuceCountLost_players.entrySet().stream()
                         .filter(e -> e.getValue() == maxDeuceLost)
                         .map(Map.Entry::getKey)
                         .collect(Collectors.toList());
 
                 playerMostDeuceLostDesc = playersMostDeuceLost.stream().
-                        map(player -> maxDeuceLost + " games --> " + player.getNameAsLink())
+                        map(player -> maxDeuceLost + " games --> " + player.getNameAsLink(seasonFilter))
                         .collect(Collectors.joining("<br>"));
             }
             shameList.add(new RecordStat("Most deuce games lost (Player)", playerMostDeuceLostDesc));
@@ -716,7 +727,7 @@ public class RecordsController {
                         .collect(Collectors.toList());
 
                 teamMostDeuceLostDesc = teamsMostDeuceLost.stream().
-                        map(team -> maxDeuceLost + " games --> " + team.getNameAsLink())
+                        map(team -> maxDeuceLost + " games --> " + team.getNameAsLink(seasonFilter))
                         .collect(Collectors.joining("<br>"));
             }
             shameList.add(new RecordStat("Most deuce games lost (Team)", teamMostDeuceLostDesc));
@@ -752,7 +763,7 @@ public class RecordsController {
                             GameV2 startStreak = gameStreak.getGameList().get(StreakCnt-1);
                             GameV2 endStreak = gameStreak.getGameList().get(0);
 
-                            return gameStreak.getGameList().size() + " games --> " + gameStreak.player.getNameAsLink() + ": "
+                            return gameStreak.getGameList().size() + " games --> " + gameStreak.player.getNameAsLink(seasonFilter) + ": "
                                     + startStreak.getGame_idAsLinktoMatchHist(season_id) + " (" + startStreak.getPlayedOn_IST() + ") to "
                                     + endStreak.getGame_idAsLinktoMatchHist(season_id) + " (" + endStreak.getPlayedOn_IST() + ")";
                         })
@@ -791,7 +802,7 @@ public class RecordsController {
                             GameV2 startStreak = gameStreak.getGameList().get(StreakCnt-1);
                             GameV2 endStreak = gameStreak.getGameList().get(0);
 
-                            return gameStreak.getGameList().size() + " games --> " + gameStreak.team.getNameAsLink() + ": "
+                            return gameStreak.getGameList().size() + " games --> " + gameStreak.team.getNameAsLink(seasonFilter) + ": "
                                     + startStreak.getGame_idAsLinktoMatchHist(season_id) + " (" + startStreak.getPlayedOn_IST() + ") to "
                                     + endStreak.getGame_idAsLinktoMatchHist(season_id) + " (" + endStreak.getPlayedOn_IST() + ")";
                         })

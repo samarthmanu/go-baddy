@@ -72,11 +72,12 @@
         <script src="dist/sortable-tables.min.js" type="text/javascript"></script>
     </head>
     <style>
-           th {
-                background-color: #DCDCDC
-            }
-   </style>
+               th {
+                    background-color: #DCDCDC
+                }
+    </style>
     <body>
+    <#noautoesc>
     <button onClick="window.location.reload();">Refresh</button>
     <input type="button" value="Back" onclick="location.href = document.referrer; return false;"/>
     <input type="button" onclick="location.href='/'" value="Back to Main"/>
@@ -133,75 +134,19 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <#list games as game>
+                     <#list games as game>
                         <tr>
-                            <td><a href="updateMatch?id=${game.game_id}" title="Click to update match details">${game.game_id}</a>
-                            <#if game.invalidate==true><img src="images/icon-flag.jpg" height="10" width="10" title="Match Invalidated"</#if>
-                            </td>
-                            <td>${game.getPlayedOn_IST()}</td>
-                            <td>
-                                <#if game.t1?has_content>
-                                    <a href="teamStats?team_id=${game.t1.team_id}" title="${game.t1.p1.name} & ${game.t1.p2.name}">Team ${game.t1.name}</a>
-                                    <font size="-1">
-                                    (<a href="playerStats?player_id=${game.t1.p1.player_id}">${game.t1.p1.name}</a><#if game.t1.p1.invalidate==true><img src="images/icon-flag.jpg" height="10" width="10" title="Player Invalidated"></#if>
-                                     &
-                                     <a href="playerStats?player_id=${game.t1.p2.player_id}">${game.t1.p2.name}</a><#if game.t1.p2.invalidate==true><img src="images/icon-flag.jpg" height="10" width="10" title="Player Invalidated"></#if>)
-                                     </font>
-                                <#else>
-                                     <a href="playerStats?player_id=${game.p1.player_id}">${game.p1.name}</a> <#if game.p1.invalidate==true><img src="images/icon-flag.jpg" height="10" width="10" title="Player Invalidated"></#if>
-                                     &
-                                     <a href="playerStats?player_id=${game.p2.player_id}">${game.p2.name}</a> <#if game.p2.invalidate==true><img src="images/icon-flag.jpg" height="10" width="10" title="Player Invalidated"></#if>
-                                </#if>
-                            </td>
-                            <td>${game.score1}</td>
-                            <td>
-                                <#if game.t2?has_content>
-                                    <a href="teamStats?team_id=${game.t2.team_id}" title="${game.t2.p1.name} & ${game.t2.p2.name}">Team ${game.t2.name}</a>
-                                    <font size="-1">
-                                    (<a href="playerStats?player_id=${game.t2.p1.player_id}">${game.t2.p1.name}</a><#if game.t2.p1.invalidate==true><img src="images/icon-flag.jpg" height="10" width="10" title="Player Invalidated"></#if>
-                                     &
-                                     <a href="playerStats?player_id=${game.t2.p2.player_id}">${game.t2.p2.name}</a><#if game.t2.p2.invalidate==true><img src="images/icon-flag.jpg" height="10" width="10" title="Player Invalidated"></#if>)
-                                     </font>
-                                <#else>
-                                    <a href="playerStats?player_id=${game.p3.player_id}">${game.p3.name}</a> <#if game.p3.invalidate==true><img src="images/icon-flag.jpg" height="10" width="10" title="Player Invalidated"></#if>
-                                     &
-                                     <a href="playerStats?player_id=${game.p4.player_id}">${game.p4.name}</a> <#if game.p4.invalidate==true><img src="images/icon-flag.jpg" height="10" width="10" title="Player Invalidated"></#if>
-                                </#if>
-                            </td>
-                            <td>${game.score2}</td>
-                            <td>
-                            WINNERS:
-                                <#if (game.score1>game.score2)>
-                                        <#if game.t1?has_content>
-                                            <a href="teamStats?team_id=${game.t1.team_id}" title="${game.t1.p1.name} & ${game.t1.p2.name}">Team ${game.t1.name}</a>
-                                            <font size="-1">
-                                            (<a href="playerStats?player_id=${game.t1.p1.player_id}">${game.t1.p1.name}</a><#if game.t1.p1.invalidate==true><img src="images/icon-flag.jpg" height="10" width="10" title="Player Invalidated"></#if>
-                                             &
-                                             <a href="playerStats?player_id=${game.t1.p2.player_id}">${game.t1.p2.name}</a><#if game.t1.p2.invalidate==true><img src="images/icon-flag.jpg" height="10" width="10" title="Player Invalidated"></#if>)
-                                             </font>
-                                        <#else>
-                                            <a href="playerStats?player_id=${game.p1.player_id}">${game.p1.name}</a> <#if game.p1.invalidate==true><img src="images/icon-flag.jpg" height="10" width="10" title="Player Invalidated"></#if>
-                                             &
-                                            <a href="playerStats?player_id=${game.p2.player_id}">${game.p2.name}</a> <#if game.p2.invalidate==true><img src="images/icon-flag.jpg" height="10" width="10" title="Player Invalidated"></#if>
-                                        </#if>
-                                <#else>
-                                        <#if game.t2?has_content>
-                                            <a href="teamStats?team_id=${game.t2.team_id}" title="${game.t2.p1.name} & ${game.t2.p2.name}">Team ${game.t2.name}</a>
-                                            <font size="-1">
-                                            (<a href="playerStats?player_id=${game.t2.p1.player_id}">${game.t2.p1.name}</a><#if game.t2.p1.invalidate==true><img src="images/icon-flag.jpg" height="10" width="10" title="Player Invalidated"></#if>
-                                             &
-                                             <a href="playerStats?player_id=${game.t2.p2.player_id}">${game.t2.p2.name}</a><#if game.t2.p2.invalidate==true><img src="images/icon-flag.jpg" height="10" width="10" title="Player Invalidated"></#if>)
-                                             </font>
-                                        <#else>
-                                            <a href="playerStats?player_id=${game.p3.player_id}">${game.p3.name}</a> <#if game.p3.invalidate==true><img src="images/icon-flag.jpg" height="10" width="10" title="Player Invalidated"></#if>
-                                             &
-                                            <a href="playerStats?player_id=${game.p4.player_id}">${game.p4.name}</a> <#if game.p4.invalidate==true><img src="images/icon-flag.jpg" height="10" width="10" title="Player Invalidated"></#if>
-                                        </#if>
-                                </#if>
-                            </td>
+                           <td>${game.getGame_idAsLinktoUpdateMatch()}</td>
+                           <td>${game.getPlayedOn_IST()}</td>
+                           <td>${game.getTeam1_or_playersAsLink((season_id)!-1, (fromDate)!"NA", (toDate)!"NA")}</td>
+                           <td>${game.score1}</td>
+                           <td>${game.getTeam2_or_playersAsLink((season_id)!-1, (fromDate)!"NA", (toDate)!"NA")}</td>
+                           <td>${game.score2}</td>
+                           <td>${game.getWinningTeamOrPlayersAsLink((season_id)!-1, (fromDate)!"NA", (toDate)!"NA")}</td>
                         </tr>
-                    </#list>
+                     </#list>
                    </tbody>
                 </table>
+    </#noautoesc>
     </body>
 </html>

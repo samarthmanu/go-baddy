@@ -85,7 +85,24 @@ public class Player {
     }
 
     public String getNameAsLink() {
-        return MessageFormat.format("<a href=\"playerStats?id={0}\" title=\"Click to see player stats\">{1}</a>", player_id, name);
+        String invalidateImg = invalidate?"<img src=\"images/icon-flag.jpg\" height=10 width=10 title=\"Player Invalidated\">" : "";
+        return MessageFormat.format("<a href=\"playerStats?player_id={0}\" title=\"Click to see player stats\">{1}</a>{2}", player_id, name, invalidateImg);
+    }
+
+    public String getNameAsLink(String seasonFilter) {
+        String invalidateImg = invalidate?"<img src=\"images/icon-flag.jpg\" height=10 width=10 title=\"Player Invalidated\">" : "";
+        return MessageFormat.format("<a href=\"playerStats?player_id={0}{1}\" title=\"Click to see player stats\">{2}</a>{3}", player_id, seasonFilter, name, invalidateImg);
+    }
+
+    public String getNameAsLink(long season_id, String fromDate, String toDate){
+        String invalidateImg = invalidate?"<img src=\"images/icon-flag.jpg\" height=10 width=10 title=\"Player Invalidated\">" : "";
+        String seasonFilter=MessageFormat.format("&season_id={0}", season_id);
+
+        if(season_id==0 && !fromDate.equals("NA") && !toDate.equals("NA")) {
+            seasonFilter=seasonFilter.concat(MessageFormat.format("&fromDate={0}&toDate={1}", fromDate, toDate));
+        }
+
+        return MessageFormat.format("<a href=\"playerStats?player_id={0}{1}\" title=\"Click to see player stats\">{2}</a>{3}", player_id, seasonFilter, name, invalidateImg);
     }
 
     public Timestamp getUpdated_on() {

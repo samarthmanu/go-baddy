@@ -119,7 +119,21 @@ public class Team {
     }
 
     public String getNameAsLink() {
-        return MessageFormat.format("<a href=\"teamStats?team_id={0}\" title=\"{1}\">Team {2}</a> <font size='-1'>({3} & {4})</font>", team_id, (p1.getName().concat(" & ").concat(p2.getName())), name, p1.getNameAsLink(), p2.getNameAsLink());
+        return MessageFormat.format("<a href=\"teamStats?team_id={0}\" title=\"{1}\">Team {2}</a> <font size=-1>({3} & {4})</font>", team_id, (p1.getName() + " & " + p2.getName()), name, p1.getNameAsLink(), p2.getNameAsLink());
+    }
+
+    public String getNameAsLink(String seasonFilter){
+        return MessageFormat.format("<a href=\"teamStats?team_id={0}{1}\" title=\"{2}\">Team {3}</a> <font size=-1>({4} & {5})</font>", team_id, seasonFilter, (p1.getName() + " & " + p2.getName()), name, p1.getNameAsLink(seasonFilter), p2.getNameAsLink(seasonFilter));
+    }
+
+    public String getNameAsLink(long season_id, String fromDate, String toDate){
+        String seasonFilter=MessageFormat.format("&season_id={0}", season_id);
+
+        if(season_id==0 && !fromDate.equals("NA") && !toDate.equals("NA")) {
+            seasonFilter=seasonFilter.concat(MessageFormat.format("&fromDate={0}&toDate={1}", fromDate, toDate));
+        }
+
+        return MessageFormat.format("<a href=\"teamStats?team_id={0}{1}\" title=\"{2}\">Team {3}</a> <font size=-1>({4} & {5})</font>", team_id, seasonFilter, (p1.getName() + " & " + p2.getName()), name, p1.getNameAsLink(seasonFilter), p2.getNameAsLink(seasonFilter));
     }
 
     public void setName(String name) {

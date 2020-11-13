@@ -77,6 +77,7 @@
             }
    </style>
     <body>
+        <#noautoesc>
         <button onClick="window.location.reload();">Refresh</button>
         <input type="button" value="Back" onclick="location.href = document.referrer; return false;"/>
         <input type="button" onclick="location.href='/'" value="Back to Main"/>
@@ -123,20 +124,24 @@
                                       <th class="numeric-sort">Played pts</th>
                                       <th class="numeric-sort">Win pts</th>
                                       <th class="numeric-sort">Deuce pts</th>
+                                      <th class="numeric-sort">Big win pts</th>
                                       <th class="numeric-sort">Team change pts</th>
                                       <th class="numeric-sort">Total pts</th>
+                                      <th class="numeric-sort">Avg pts/game</th>
                                   </tr>
                               </thead>
                             <tbody>
                             <#list players_pts as pStats>
                                 <tr>
-                                    <td><a href="playerStats?player_id=${pStats.player.player_id}">${pStats.player.name}<a/></td>
+                                    <td>${pStats.player.getNameAsLink((season_id)!-1, (fromDate)!"NA", (toDate)!"NA")}</td>
                                     <td>${pStats.fMap.matchday_pts.total}</td>
                                     <td>${pStats.fMap.played_pts.total}</td>
                                     <td>${pStats.fMap.won_pts.total}</td>
                                     <td>${pStats.fMap.deuce_pts.total}</td>
+                                    <td>${pStats.fMap.big_win_pts.total}</td>
                                     <td>${pStats.fMap.teamchange_pts.total}</td>
                                     <td>${pStats.fMap.total_pts.total}</td>
+                                    <td>${pStats.calcRatio(pStats.fMap.total_pts.total,pStats.fMap.played_pts.total)}</td>
                                 </tr>
                             </#list>
                             </tbody>
@@ -150,24 +155,22 @@
                                   <th class="numeric-sort">Played pts</th>
                                   <th class="numeric-sort">Win pts</th>
                                   <th class="numeric-sort">Deuce pts</th>
+                                  <th class="numeric-sort">Big win pts</th>
                                   <th class="numeric-sort">Total pts</th>
+                                  <th class="numeric-sort">Avg pts/game</th>
                               </tr>
                             </thead>
                             <tbody>
                             <#list teams_pts as tStats>
                                 <tr>
-                                    <td> <a href="teamStats?team_id=${tStats.team.team_id}" title="${tStats.team.p1.name} & ${tStats.team.p2.name}"}>Team ${tStats.team.name}</a>
-                                    <font size="-1">
-                                    (<a href="playerStats?player_id=${tStats.team.p1.player_id}">${tStats.team.p1.name}</a><#if tStats.team.p1.invalidate==true><img src="images/icon-flag.jpg" height="10" width="10" title="Player Invalidated"></#if>
-                                     &
-                                     <a href="playerStats?player_id=${tStats.team.p2.player_id}">${tStats.team.p2.name}</a><#if tStats.team.p2.invalidate==true><img src="images/icon-flag.jpg" height="10" width="10" title="Player Invalidated"></#if>)
-                                     </font>
-                                    </td>
+                                    <td>${tStats.team.getNameAsLink((season_id)!-1, (fromDate)!"NA", (toDate)!"NA")}</td>
                                     <td>${tStats.fMap.matchday_pts.total}</td>
                                     <td>${tStats.fMap.played_pts.total}</td>
                                     <td>${tStats.fMap.won_pts.total}</td>
                                     <td>${tStats.fMap.deuce_pts.total}</td>
+                                    <td>${tStats.fMap.big_win_pts.total}</td>
                                     <td>${tStats.fMap.total_pts.total}</td>
+                                    <td>${tStats.calcRatio(tStats.fMap.total_pts.total,tStats.fMap.played_pts.total)}</td>
                                 </tr>
                             </#list>
                             </tbody>
@@ -186,7 +189,7 @@
                   <tbody>
                     <#list playerStats as pStats>
                         <tr>
-                            <td><a href="playerStats?player_id=${pStats.player.player_id}">${pStats.player.name}<a/></td>
+                            <td>${pStats.player.getNameAsLink((season_id)!-1, (fromDate)!"NA", (toDate)!"NA")}</td>
                             <td>${pStats.played}</td>
                             <td>${pStats.won}</td>
                             <td>${pStats.lost}</td>
@@ -209,13 +212,7 @@
                       <tbody>
                         <#list teamStats as tStats>
                         <tr>
-                            <td> <a href="teamStats?team_id=${tStats.team.team_id}" title="${tStats.team.p1.name} & ${tStats.team.p2.name}"}>Team ${tStats.team.name}</a>
-                                 <font size="-1">
-                                 (<a href="playerStats?player_id=${tStats.team.p1.player_id}">${tStats.team.p1.name}</a><#if tStats.team.p1.invalidate==true><img src="images/icon-flag.jpg" height="10" width="10" title="Player Invalidated"></#if>
-                                 &
-                                 <a href="playerStats?player_id=${tStats.team.p2.player_id}">${tStats.team.p2.name}</a><#if tStats.team.p2.invalidate==true><img src="images/icon-flag.jpg" height="10" width="10" title="Player Invalidated"></#if>)
-                                 </font>
-                            </td>
+                            <td>${tStats.team.getNameAsLink((season_id)!-1, (fromDate)!"NA", (toDate)!"NA")}</td>
                             <td>${tStats.played}</td>
                             <td>${tStats.won}</td>
                             <td>${tStats.lost}</td>
@@ -224,5 +221,6 @@
                     </#list>
                     </tbody>
                   </table>
+    </#noautoesc>
     </body>
 </html>

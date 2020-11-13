@@ -19,7 +19,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static com.buncode.util.Constants.NO_DATA;
+import static com.buncode.util.Constants.NO_DATA_HTML;
+import static com.buncode.util.Constants.NO_DATA_HTML;
 
 @Controller
 public class GameController {
@@ -59,13 +60,13 @@ public class GameController {
         Season season = null;
         if (season_id == null) {
             season = seasons.get(seasons.size() - 1);
-            allGames = gameV2Service.findAllValidBySeason(season);
+            allGames = gameV2Service.findAllBySeason(season);
             model.addAttribute("season_id", season.getSeason_id());
         } else if (season_id == -1) {
-            allGames = gameV2Service.findAllValid();  //all-time
+            allGames = gameV2Service.findAll();  //all-time
             model.addAttribute("season_id", -1);
         } else if (season_id == 0) {
-            allGames = gameV2Service.findAllValidByDateRange(
+            allGames = gameV2Service.findAllByDateRange(
                     CommonUtil.stringToTimeStamp(fromDate + " 00:00:01"),
                     CommonUtil.stringToTimeStamp(toDate + " 23:59:59"));  //custom range
             model.addAttribute("fromDate", fromDate);
@@ -73,11 +74,15 @@ public class GameController {
             model.addAttribute("season_id", 0);
         } else {
             season = seasonService.findById(season_id).get();
-            allGames = gameV2Service.findAllValidBySeason(season); //season wise
+            allGames = gameV2Service.findAllBySeason(season); //season wise
             model.addAttribute("season_id", season.getSeason_id());
         }
 
+        //show all games
         model.addAttribute("games", allGames);
+
+        //counts only for valid games
+        allGames=allGames.stream().filter(gameV2 -> !gameV2.isInvalidate()).collect(Collectors.toList());
 
         List<Date> matchDays = allGames
                 .stream()
@@ -85,14 +90,19 @@ public class GameController {
                 .map(GameV2::getPlayed_on)
                 .collect(Collectors.toList());
 
-        Date lastMatchday = matchDays.stream().findFirst().orElse(null);
-        Date firstMatchday = matchDays.stream().skip(matchDays.size() - 1).findFirst().orElse(null);
+       Date lastMatchday = null;
+       Date firstMatchday=null;
 
-        model.addAttribute("matchdays_first", firstMatchday!=null? firstMatchday.toString() :NO_DATA);
-        model.addAttribute("matchdays_last", firstMatchday!=null? lastMatchday.toString() :NO_DATA);
+       if (matchDays.size()>0) {
+            lastMatchday = matchDays.stream().findFirst().orElse(null);
+            firstMatchday = matchDays.stream().skip(matchDays.size() - 1).findFirst().orElse(null);
+        }
+
+        model.addAttribute("matchdays_first", firstMatchday!=null? firstMatchday.toString() : NO_DATA_HTML);
+        model.addAttribute("matchdays_last", lastMatchday!=null? lastMatchday.toString() : NO_DATA_HTML);
         model.addAttribute("matchdays_count",matchDays.size());
         model.addAttribute("games_count",allGames.size());
-        model.addAttribute("games_avg",Math.round((allGames.size()/matchDays.size()) * 100.0) / 100.0);
+        model.addAttribute("games_avg",CommonUtil.calcRatio(allGames.size(),matchDays.size()));//Math.round((allGames.size()/matchDays.size()) * 100.0) / 100.0);
 
         end = System.currentTimeMillis();
         diff = (end - start) / 1000F;
@@ -109,7 +119,7 @@ public class GameController {
 
         model.addAttribute("adminConfig", adminConfigService.getAdminConfig());
 
-        List<Player> players = playerService.findAllValid();
+        List<Player> players = playerService.findAll().stream().filter(player -> !player.isInvalidate()).collect(Collectors.toList());
         model.addAttribute("players", players);
 
         List<Team> teams = teamService.findAll();
@@ -140,7 +150,7 @@ public class GameController {
             throw new YouShallNotPassException("Match update/creation is currently locked. Please contact admin");
         }*/
 
-        List<Player> players = playerService.findAllValid();
+        List<Player> players = playerService.findAll().stream().filter(player -> !player.isInvalidate()).collect(Collectors.toList());
         List<Team> teams = teamService.findAll();
 
         model.addAttribute("players", players);
@@ -206,7 +216,10 @@ public class GameController {
         gameService.save(game);
 
         gameV2Service.findAll(); //refresh teams cache
-        String result = MessageFormat.format("<h2>Match [#{0}] created successfully</h2>", game.getGame_id());
+        String result = MessageFormat.format(
+                "<input type=\"button\" value=\"Back\" onclick=\"location.href = document.referrer; return false;\"/>\n" +
+                        "<input type=\"button\" onclick=\"location.href='/'\" value=\"Back to Main\"/>" +
+                "<h2>Match <a href=\"matchHist\">[#{0}]</a> created successfully</h2>", game.getGame_id());
         return result;
 
     }
@@ -274,8 +287,10 @@ public class GameController {
         }
 
         gameV2Service.findAll(); //refresh games cache
-        return(MessageFormat.format("<h2>Match [#{0}] updated successfully</h2>", game.getGame_id()));
-
+        return(MessageFormat.format(
+                "<input type=\"button\" value=\"Back\" onclick=\"location.href = document.referrer; return false;\"/>\n" +
+                        "<input type=\"button\" onclick=\"location.href='/'\" value=\"Back to Main\"/>" +
+                "<h2>Match <a href=\"matchHist\">[#{0}]</a> updated successfully</h2>", game.getGame_id()));
     }
 
     @PostMapping("/invalidateMatch")
@@ -293,7 +308,10 @@ public class GameController {
         }
 
         gameV2Service.findAll(); //refresh games cache
-        return(MessageFormat.format("<h2>Match [#{0}] validity updated from [{1}] to [{2}] successfully</h2>", game.getGame_id(), !invalidate, !newInvalidate));
+        return(MessageFormat.format(
+                "<input type=\"button\" value=\"Back\" onclick=\"location.href = document.referrer; return false;\"/>\n" +
+                        "<input type=\"button\" onclick=\"location.href='/'\" value=\"Back to Main\"/>" +
+                "<h2>Match [#{0}] validity updated from [{1}] to [{2}] successfully</h2>", game.getGame_id(), !invalidate, !newInvalidate));
     }
 
 }

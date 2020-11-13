@@ -6,7 +6,6 @@ import com.buncode.repository.GameV2Repository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.util.List;
@@ -29,6 +28,16 @@ public class GameV2Service implements IGameV2Service {
     }
 
     @Override
+    public List<GameV2> findAllBySeason(Season season) {
+        return repository.findAllBySeason(season);
+    }
+
+    @Override
+    public List<GameV2> findAllByDateRange(Timestamp fromDate, Timestamp toDate) throws ParseException {
+        return repository.findAllByDateRange(fromDate, toDate);
+    }
+
+    /*@Override
     public List<GameV2> findAllValid() {
         return repository.findAllValid();
     }
@@ -43,7 +52,7 @@ public class GameV2Service implements IGameV2Service {
         return repository.findAllValidBySeason(season);
     }
 
-    /*@Override
+    @Override
     public List<GameV2> getGamesPlayedByPlayer(Player player) {
         return repository.getGamesPlayedByPlayer(player);
     }

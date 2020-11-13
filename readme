@@ -2,6 +2,9 @@ https://7.ly/baddy
 https://go-baddy.herokuapp.com/
 #todo: check for even shorter url's
 
+bugs
+- make table more compact in leaderboard
+
 #todo
 - after submitting score
    - show match summary
