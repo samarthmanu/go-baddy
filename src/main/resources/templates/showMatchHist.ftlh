@@ -72,9 +72,9 @@
         <script src="dist/sortable-tables.min.js" type="text/javascript"></script>
     </head>
     <style>
-               th {
-                    background-color: #DCDCDC
-                }
+    th {
+          background-color: #DCDCDC
+     }
     </style>
     <body>
     <#noautoesc>
@@ -135,7 +135,7 @@
                     </thead>
                     <tbody>
                      <#list games as game>
-                        <tr>
+                        <tr <#if game.invalidate==true>style="text-decoration: line-through;"</#if>>
                            <td>${game.getGame_idAsLinktoUpdateMatch()}</td>
                            <td>${game.getPlayedOn_IST()}</td>
                            <td>${game.getTeam1_or_playersAsLink((season_id)!-1, (fromDate)!"NA", (toDate)!"NA")}</td>
